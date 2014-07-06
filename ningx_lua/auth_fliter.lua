@@ -14,7 +14,7 @@ local authsession = ngx.var["cookie_" .. authsessionCookieName]
 local username = ngx.var["cookie_" .. usernameCookieName]
 
 if username == nil or autho == nil or authsession == nil then
-    ngx.say("no ok")
+    ngx.exit(ngx.HTTP_UNAUTHORIZED)
     return
 end
 
@@ -31,9 +31,9 @@ local parser = require 'redis.parser'
 local res, typ = parser.parse_reply(redis_res.body)
 
 if res == autho .. "|" .. authsession then
-    ngx.say("ok")
+    ngx.exit(ngx.HTTP_OK)
 else
-    ngx.say("no ok")
+    ngx.exit(ngx.HTTP_UNAUTHORIZED)
 end
 
 
