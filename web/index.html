@@ -1,0 +1,40 @@
+<html ng-app="facetalk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"/>
+<title>脸呼</title>
+<link href="http://code.ionicframework.com/1.0.0-beta.1/css/ionic.min.css" rel="stylesheet"/>
+<link href="css/facetalk.css" rel="stylesheet" />
+</head>
+<body>
+<ion-nav-bar></ion-nav-bar>
+<ion-nav-view animation="slide-left-right"></ion-nav-view>
+
+<script id="index.html" type="text/ng-template">
+    <ion-view> 
+        <ion-content>
+            <div class="intro">
+                <ion-slide-box does-continue="true" slide-interval="3000">
+                    <ion-slide>
+                        <div class="intro_con blue">1</div>
+                    </ion-slide>
+                    <ion-slide>
+                        <div class="intro_con yellow">2</div>
+                    </ion-slide>
+                    <ion-slide>
+                        <div class="intro_con pink">3</div>
+                    </ion-slide>
+                </ion-slide-box>
+            </div>
+            <div class="row">
+                <div class="col col-33 col-offset-33">
+                    <a href="#/home" class="button button-block button-positive">立即体验</a>
+                </div>
+            </div>
+        </ion-content>
+    </ion-view>
+</script>
+</body>
+<script type="text/javascript" src="http://code.ionicframework.com/1.0.0-beta.1/js/ionic.bundle.min.js"></script>
+<script type="text/javascript" src="js/facetalk.js"></script>
+</html>
