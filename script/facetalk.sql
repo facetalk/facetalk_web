@@ -45,7 +45,7 @@ CREATE TABLE `fh_product` (
   COMMENT '产品价格，单位是分',
   `product_status` INT(11) DEFAULT '0'
   COMMENT '产品状态：0 失效，1 有效',
-  `product_desc`   VARCHAR(255) NOT NULL
+  `product_desc`   VARCHAR(255) NULL
   COMMENT '产品说明',
   `create_date`    DATETIME
   COMMENT '创建日期',
