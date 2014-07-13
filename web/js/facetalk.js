@@ -7,12 +7,9 @@ app.config(function($stateProvider,$urlRouterProvider){
     }).state('home',{
         url:'/home',
         templateUrl:'template/home.html'
-    }).state('history',{
-        url:'/history',
-        templateURL:'template/history.html'
-    }).state('setting',{
-        url:'/setting',
-        templateUrl:'template/setting.html'
+    }).state('login',{
+        url:'/login',
+        templateUrl:'template/login.html'
     })
 
     $urlRouterProvider.otherwise("/index");
