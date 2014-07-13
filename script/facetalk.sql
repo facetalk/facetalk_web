@@ -43,11 +43,11 @@ CREATE TABLE `fh_product` (
   COMMENT '产品名称 ',
   `product_price`  INT(11) DEFAULT '0'
   COMMENT '产品价格，单位是分',
-  `product_status` INT(11) DEFAULT '0'
+  `product_status` INT(11) DEFAULT '1'
   COMMENT '产品状态：0 失效，1 有效',
   `product_desc`   VARCHAR(255) NULL
   COMMENT '产品说明',
-  `create_date`    DATETIME
+  `create_date`    TIMESTAMP
   COMMENT '创建日期',
   PRIMARY KEY (`id`)
 )
