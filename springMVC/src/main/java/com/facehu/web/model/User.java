@@ -32,7 +32,7 @@ public class User {
     private int sexualOrientation;
 
     @Column(name = "introduction")
-    private int introduction;
+    private String introduction;
 
     @Column(name = "creation_time")
     private Date creationTime;
@@ -45,7 +45,7 @@ public class User {
 
     }
 
-    public User(String username, String password, String name, String email, int gender, int sexualOrientation, int introduction) {
+    public User(String username, String password, String name, String email, int gender, int sexualOrientation, String introduction) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -120,11 +120,11 @@ public class User {
         this.sexualOrientation = sexualOrientation;
     }
 
-    public int getIntroduction() {
+    public String getIntroduction() {
         return introduction;
     }
 
-    public void setIntroduction(int introduction) {
+    public void setIntroduction(String introduction) {
         this.introduction = introduction;
     }
 
