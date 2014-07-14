@@ -16,6 +16,13 @@ app.config(function($stateProvider,$urlRouterProvider){
     }).state('tabs',{
         url:'/tab',
         templateUrl:'template/tabs.html'
+    }).state('tabs.home',{
+        url:'/home',
+        views:{
+            'tab-home':{
+                templateUrl:'template/home.html'
+            }
+        }
     }).state('tabs.history',{
         url:'/history',
         views:{

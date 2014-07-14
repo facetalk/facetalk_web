@@ -1,12 +1,10 @@
 <ion-view title="聊天记录">
     <ion-content>
         <ion-list show-delete="false" show-reorder="false" can-swipe="true">
-            <ion-item ng-repeat="item in items">
-                <a class="item item-avatar" ion-clear>
+            <ion-item class="item-avatar" ng-repeat="item in items">
                     <img src="{{item.img}}" />
                     <h2>{{item.name}}</h2>
                     <p>呼入/呼出 时长：1分钟</p>
-                </a>
             </ion-item>
         </ion-list>
     </ion-content>
