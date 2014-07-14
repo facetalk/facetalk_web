@@ -3,14 +3,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"/>
 <title>脸呼</title>
-<link href="http://code.ionicframework.com/1.0.0-beta.1/css/ionic.min.css" rel="stylesheet"/>
+<link href="ionic/css/ionic.css" rel="stylesheet"/>
 <link href="css/facetalk.css" rel="stylesheet" />
 </head>
 <body>
 <ion-nav-bar>
-    <ion-nav-back-button class="button-clear">
-        <i class="ion-arrow-left-c"></i> 返回
-    </ion-nav-back-button>
+    <ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button>
 </ion-nav-bar>
 <ion-nav-view animation="slide-left-right"></ion-nav-view>
 
@@ -32,26 +30,13 @@
             </div>
             <div class="row">
                 <div class="col col-33 col-offset-33">
-                    <a href="#/home" class="button button-block button-positive">立即体验</a>
+                    <a href="#/tab" class="button button-block button-positive">立即体验</a>
                 </div>
             </div>
         </ion-content>
     </ion-view>
 </script>
-<!-- <script id="tabs.html" type="text/ng-template">
-    <ion-tabs class="tabs-positive tabs-icon-top">
-        <ion-tab title="交友" icon="ion-ios7-person" href="#/tab/home">
-            <ion-nav-view name="home-tab"></ion-nav-view>
-        </ion-tab>
-        <ion-tab title="记录" icon="ion-document-text" href="/history">
-            <ion-nav-view name="history-tab"></ion-nav-view>
-        </ion-tab>
-        <ion-tab title="我的" icon="ion-gear-a" href="/setting">
-            <ion-nav-view name="setting-tab"></ion-nav-view>
-        </ion-tab>
-    </ion-tabs>
-</script> -->
 </body>
-<script type="text/javascript" src="http://code.ionicframework.com/1.0.0-beta.1/js/ionic.bundle.min.js"></script>
+<script type="text/javascript" src="ionic/js/ionic.bundle.js"></script>
 <script type="text/javascript" src="js/facetalk.js"></script>
 </html>
