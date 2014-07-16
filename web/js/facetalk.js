@@ -31,7 +31,8 @@ app.config(function($stateProvider,$urlRouterProvider){
         url:'/detail',
         views:{
             'tab-home':{
-                templateUrl:'template/detail.html'
+                templateUrl:'template/detail.html',
+                controller:'detail'
             }
         }
     }).state('tabs.history',{
@@ -120,5 +121,21 @@ app.controller('buy',function($scope,$ionicPopup){
                 alert('没成功')
             }
         })
+    }
+})
+app.controller('detail',function($scope,$ionicModal){
+    $ionicModal.fromTemplateUrl('template/regist.html', {
+        scope: $scope,
+        animation:'slide-in-up'
+    }).then(function(modal){
+        $scope.modal = modal;
+    })
+    $scope.regist = function(){
+        $scope.modal.show();
+    }
+})
+app.controller('regist',function($scope){
+    $scope.back = function(){
+        $scope.modal.hide();
     }
 })
