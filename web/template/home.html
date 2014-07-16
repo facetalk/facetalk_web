@@ -1,0 +1,15 @@
+<ion-view title="脸呼">
+    <ion-nav-buttons side="right">
+        <a class="button button-positive" ng-click="login()">登录</a>
+    </ion-nav-buttons>
+    <ion-content>
+        <ion-list>
+            <ion-item class="item-avatar" ng-repeat="item in items" href="#/tab/detail">
+                    <img src="{{item.img}}" />
+                    <h2>{{item.name}}</h2>
+                    <p>在线/不在线</p>
+            </ion-item>
+        </ion-list>
+        <ion-infinite-scroll on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
+    </ion-content>
+</ion-view>
