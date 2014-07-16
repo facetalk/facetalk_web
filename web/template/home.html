@@ -1,19 +1,15 @@
 <ion-view title="脸呼">
     <ion-nav-buttons side="right">
-        <a class="button button-positive" href="#/login">登录</a>
+        <a class="button button-positive" ng-click="login()">登录</a>
     </ion-nav-buttons>
     <ion-content>
-        <ion-tabs class="tabs-positive tabs-icon-top">
-            <ion-tab title="交友" icon="ion-ios7-person" href="#/tab/home">
-                <ion-nav-view name="home-tab"></ion-nav-view>
-            </ion-tab>
-            <ion-tab title="记录" icon="ion-document-text" href="/history">
-                <ion-nav-view name="history-tab"></ion-nav-view>
-            </ion-tab>
-            <ion-tab title="我的" icon="ion-gear-a" href="/setting">
-                <ion-nav-view name="setting-tab"></ion-nav-view>
-            </ion-tab>
-        </ion-tabs>
+        <ion-list>
+            <ion-item class="item-avatar" ng-repeat="item in items" href="#/tab/detail">
+                    <img src="{{item.img}}" />
+                    <h2>{{item.name}}</h2>
+                    <p>在线/不在线</p>
+            </ion-item>
+        </ion-list>
+        <ion-infinite-scroll on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
     </ion-content>
 </ion-view>
-

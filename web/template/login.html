@@ -1,9 +1,8 @@
-<ion-nav-bar>
-    <ion-nav-back-button class="button-clear">
-        <i class="ion-arrow-left-c"></i> 取消
-    </ion-nav-back-button>
-</ion-nav-bar>
-<ion-view title="登录">
+<div class="modal" ng-controller="login">
+    <ion-header-bar class="bar bar-positive">
+        <button class="button button-clear" ng-click="back()">取消</button>
+        <h1 class="title">登录</h1>
+    </ion-header-bar>
     <ion-content>
         <div class="list">
             <label class="item item-input">
@@ -12,8 +11,12 @@
             <label class="item item-input">
                 <input type="password" placeholder="密码">
             </label>
-            <button class="button button-block button-positive">登录</button>
+        </div>
+        <div class="row">
+            <div class="col col-33 col-offset-33">
+                <button class="button button-block button-positive">登录</button>
+            </div>
         </div>
     </ion-content>
-</ion-view>
+</div>
 
