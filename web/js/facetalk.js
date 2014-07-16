@@ -46,7 +46,8 @@ app.config(function($stateProvider,$urlRouterProvider){
         url:'/setting',
         views:{
             'tab-setting':{
-                templateUrl:'template/setting.html'
+                templateUrl:'template/setting.html',
+                controller:'setting'
             }
         }
     }).state('tabs.editing',{
@@ -86,9 +87,38 @@ app.controller('homeCtr',function($scope,$ionicModal){
         $scope.modal.show();
     }
 })
-
 app.controller('login',function($scope){
     $scope.back = function(){
         $scope.modal.hide();
+    }
+})
+
+app.controller('setting',function($scope,$ionicModal){
+    $ionicModal.fromTemplateUrl('template/buy.html', {
+        scope: $scope,
+        animation:'slide-in-up'
+    }).then(function(modal){
+        $scope.modal = modal;
+    })
+    $scope.buy = function(){
+        $scope.modal.show();
+    }
+}) 
+app.controller('buy',function($scope,$ionicPopup){
+    $scope.back = function(){
+        $scope.modal.hide();
+    }
+    $scope.check = function(){
+        $ionicPopup.confirm({
+            title:'提示信息',
+            cancelText:'付款出现问题',
+            okText:'付款成功'
+        }).then(function(res){
+            if(res){
+                alert('检测是否真的付款')
+            }else{
+                alert('没成功')
+            }
+        })
     }
 })
