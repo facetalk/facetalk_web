@@ -7,6 +7,9 @@ var items = [
     {'name':'赵四夫人','img':'images/3.jpg'},
     {'name':'杨七妹子','img':'images/4.jpg'},
     {'name':'八婆娘','img':'images/5.jpg'},
+    {'name':'张三MM','img':'images/0.jpg'},
+    {'name':'李四','img':'images/1.jpg'},
+    {'name':'王五大姑娘','img':'images/2.jpg'}
 ]
 
 app.config(function($stateProvider,$urlRouterProvider){
@@ -20,7 +23,15 @@ app.config(function($stateProvider,$urlRouterProvider){
         url:'/home',
         views:{
             'tab-home':{
-                templateUrl:'template/home.html'
+                templateUrl:'template/home.html',
+                controller:'homeCtr'
+            }
+        }
+    }).state('tabs.detail',{
+        url:'/detail',
+        views:{
+            'tab-home':{
+                templateUrl:'template/detail.html'
             }
         }
     }).state('tabs.history',{
@@ -38,24 +49,18 @@ app.config(function($stateProvider,$urlRouterProvider){
                 templateUrl:'template/setting.html'
             }
         }
-    }).state('login',{
-        url:'/login',
-        templateUrl:'template/login.html',
-        controller:'login'
     }).state('tabs.editing',{
         url:'/editing',
         views:{
             'tab-setting':{
-                templateUrl:'template/editing.html',
-                controller:'editing'
+                templateUrl:'template/editing.html'
             }
         }
     }).state('tabs.resetpwd',{
         url:'/resetpwd',
         views:{
             'tab-setting':{
-                templateUrl:'template/resetpwd.html',
-                controller:'reset'
+                templateUrl:'template/resetpwd.html'
             }
         }
     })
@@ -67,19 +72,23 @@ app.controller('history',function($scope){
     $scope.items = items
 })
 
-app.controller('login',function($scope,$ionicNavBarDelegate){
-    $scope.back = function(){
-        $ionicNavBarDelegate.back();
+app.controller('homeCtr',function($scope,$ionicModal){
+    $scope.items = items;
+    $scope.loadMore = function(){
     }
-})
-app.controller('editing',function($scope,$ionicNavBarDelegate){
-    $scope.back = function(){
-        $ionicNavBarDelegate.back();
-    }
-})
-app.controller('reset',function($scope,$ionicNavBarDelegate){
-    $scope.back = function(){
-        $ionicNavBarDelegate.back();
+    $ionicModal.fromTemplateUrl('template/login.html', {
+        scope: $scope,
+        animation:'slide-in-up'
+    }).then(function(modal){
+        $scope.modal = modal;
+    })
+    $scope.login = function(){
+        $scope.modal.show();
     }
 })
 
+app.controller('login',function($scope){
+    $scope.back = function(){
+        $scope.modal.hide();
+    }
+})
