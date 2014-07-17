@@ -27,7 +27,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                 controller:'homeCtr'
             }
         }
-    }).state('tabs.detail-home',{
+    }).state('tabs.detail',{
         url:'/detail',
         views:{
             'tab-home':{
@@ -90,15 +90,15 @@ app.controller('homeCtr',function($scope,$ionicModal){
         scope: $scope,
         animation:'slide-in-right'
     }).then(function(modal){
-        $scope.modal = modal;
+        $scope.modal_login = modal;
     })
     $scope.login = function(){
-        $scope.modal.show();
+        $scope.modal_login.show();
     }
 })
 app.controller('login',function($scope){
     $scope.back = function(){
-        $scope.modal.hide();
+        $scope.modal_login.hide();
     }
 })
 
@@ -132,18 +132,31 @@ app.controller('buy',function($scope,$ionicPopup){
     }
 })
 app.controller('detail',function($scope,$ionicModal){
+    //注册
     $ionicModal.fromTemplateUrl('template/regist.html', {
         scope: $scope,
         animation:'slide-in-right'
     }).then(function(modal){
-        $scope.modal = modal;
+        $scope.modal_regist = modal;
     })
+    //登陆
+    $ionicModal.fromTemplateUrl('template/login.html', {
+        scope: $scope,
+        animation:'slide-in-right'
+    }).then(function(modal){
+        $scope.modal_login = modal;
+    })
+
+    $scope.login = function(){
+        $scope.modal_login.show();
+    }
     $scope.regist = function(){
-        $scope.modal.show();
+        $scope.modal_regist.show();
     }
 })
+
 app.controller('regist',function($scope){
     $scope.back = function(){
-        $scope.modal.hide();
+        $scope.modal_regist.hide();
     }
 })
