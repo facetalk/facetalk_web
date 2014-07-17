@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %c - %m%n"/>
+        </layout>
+    </appender>
+
+
+    <!-- make Jersey less noisy -->
+    <logger name="com.facehu.web" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <root>
+        <priority value="info"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!--<appender name="FILE" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<param name="File" value="${catalina.home}/logs/dotcms.log"/>-->
+    <!--<param name="MaxFileSize" value="20MB"/>-->
+    <!--<param name="MaxBackupIndex" value="10"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern"-->
+    <!--value="[%d{dd/MM/yy HH:mm:ss:SSS z}] %5p %c{2}: %m%n" />-->
+    <!--</layout>-->
+    <!--</appender>-->
+
+    <!--<appender name="TEST" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<param name="File" value="${catalina.home}/logs/dotcms-testing.log"/>-->
+    <!--<param name="MaxFileSize" value="20MB"/>-->
+    <!--<param name="MaxBackupIndex" value="10"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern"-->
+    <!--value="[%d{dd/MM/yy HH:mm:ss:SSS z}] %5p %c{2}: %m%n" />-->
+    <!--</layout>-->
+    <!--</appender>-->
+
+    <!--<appender name="SECURITY" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<param name="File" value="${catalina.home}/logs/dotcms-security.log"/>-->
+    <!--<param name="MaxFileSize" value="20MB"/>-->
+    <!--<param name="MaxBackupIndex" value="10"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern"-->
+    <!--value="[%d{dd/MM/yy HH:mm:ss:SSS z}] %5p %c{2}: %m%n" />-->
+    <!--</layout>-->
+    <!--</appender>-->
+
+    <!--<appender name="SITESEARCH" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<param name="File" value="${catalina.home}/logs/dotcms-sitesearch.log"/>-->
+    <!--<param name="MaxFileSize" value="20MB"/>-->
+    <!--<param name="MaxBackupIndex" value="10"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern"-->
+    <!--value="[%d{dd/MM/yy HH:mm:ss:SSS z}] %5p %c{2}: %m%n" />-->
+    <!--</layout>-->
+    <!--</appender>-->
+
+    <!--<appender name="ADMINAUDIT" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<param name="File" value="${catalina.home}/logs/dotcms-adminaudit.log"/>-->
+    <!--<param name="MaxFileSize" value="20MB"/>-->
+    <!--<param name="MaxBackupIndex" value="10"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern"-->
+    <!--value="[%d{dd/MM/yy HH:mm:ss:SSS z}] %5p %c{2}: %m%n" />-->
+    <!--</layout>-->
+    <!--</appender>-->
+
+    <!--<appender name="USERS_ACTIVITY" class="org.apache.log4j.appender.RollingNewFileAppender">-->
+    <!--<param name="File" value="${catalina.home}/logs/dotcms-userActivity.log"/>-->
+    <!--<param name="MaxFileSize" value="20MB"/>-->
+    <!--<param name="MaxBackupIndex" value="10"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern"-->
+    <!--value="[%d{dd/MM/yy HH:mm:ss:SSS z}] %5p %c{2}: %m%n" />-->
+    <!--</layout>-->
+    <!--</appender>-->
+
+    <!--<appender name="VELOCITY" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<param name="File" value="${catalina.home}/logs/dotcms-velocity.log"/>-->
+    <!--<param name="MaxFileSize" value="20MB"/>-->
+    <!--<param name="MaxBackupIndex" value="10"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern"-->
+    <!--value="[%d{dd/MM/yy HH:mm:ss:SSS z}] %5p %c{2}: %m%n" />-->
+    <!--</layout>-->
+    <!--</appender>-->
+
+    <!--<appender name="PUSHPUBLISH" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<param name="File" value="${catalina.home}/logs/dotcms-pushpublish.log" />-->
+    <!--<param name="MaxFileSize" value="20MB" />-->
+    <!--<param name="MaxBackupIndex" value="10" />-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern" value="[%d{dd/MM/yy HH:mm:ss:SSS z}] %5p %c{2}: %m%n" />-->
+    <!--</layout>-->
+    <!--</appender>-->
+
+</log4j:configuration>

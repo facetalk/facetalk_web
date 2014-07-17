@@ -19,6 +19,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @Transactional
     public void addUser(User user) {
         sessionFactory.getCurrentSession().save(user);
     }
@@ -39,7 +40,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public User getUserById(String username) {
+    public User getUserByName(String username) {
         Session session = sessionFactory.getCurrentSession();
         List<User> list = session.createQuery("from User u where u.username = :username")
                 .setParameter("username", username)

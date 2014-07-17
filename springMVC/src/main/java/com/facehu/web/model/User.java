@@ -1,6 +1,9 @@
 package com.facehu.web.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -12,8 +15,6 @@ import java.util.Date;
 public class User {
 
     @Id
-    @Column(name = "username")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String username;
 
     @Column(name = "password")
@@ -33,6 +34,10 @@ public class User {
 
     @Column(name = "introduction")
     private String introduction;
+
+
+    @Column(name = "info_completeness")
+    private int infoCompleteness;
 
     @Column(name = "creation_time")
     private Date creationTime;
@@ -70,6 +75,31 @@ public class User {
     @Override
     public int hashCode() {
         return username != null ? username.hashCode() : 0;
+    }
+
+
+    public int getInfoCompleteness() {
+        return infoCompleteness;
+    }
+
+    public void setInfoCompleteness(int infoCompleteness) {
+        this.infoCompleteness = infoCompleteness;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", gender=" + gender +
+                ", sexualOrientation=" + sexualOrientation +
+                ", introduction='" + introduction + '\'' +
+                ", infoCompleteness=" + infoCompleteness +
+                ", creationTime=" + creationTime +
+                ", modificationTime=" + modificationTime +
+                '}';
     }
 
     public String getUsername() {

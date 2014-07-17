@@ -15,14 +15,11 @@ local usernameCookieName = "_ft_username"
 
 --1、先从post请求中得到用户名密码
 
-
-
-
 --ngx.say(ngx.var.loginUserName)
 --ngx.say(ngx.var.loginPassword)
 --ngx.say("-|------|-")
 local passwordMd5 = ngx.md5(ngx.var.loginPassword .. password_salt)
---ngx.say(passwordMd5)
+ngx.say(passwordMd5)
 --2、加密后去数据库中验证
 local mysql = require "resty.mysql"
 local db, err = mysql:new()

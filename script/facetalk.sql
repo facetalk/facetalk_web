@@ -25,6 +25,10 @@ CREATE TABLE `fh_user` (
   `introduction`       VARCHAR(255)
                        CHARACTER SET utf8 DEFAULT NULL
   COMMENT '自我介绍',
+
+  `info_completeness`  TINYINT(4) DEFAULT '0'
+  COMMENT '信息完成度，0 基本信息 1 完成头像',
+
   `creation_time`      TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP
   COMMENT '创建时间',
   `modification_time`  TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
