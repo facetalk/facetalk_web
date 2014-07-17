@@ -27,7 +27,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                 controller:'homeCtr'
             }
         }
-    }).state('tabs.detail',{
+    }).state('tabs.detail-home',{
         url:'/detail',
         views:{
             'tab-home':{
@@ -41,6 +41,14 @@ app.config(function($stateProvider,$urlRouterProvider){
             'tab-history':{
                 templateUrl:'template/history.html',
                 controller:'history'
+            }
+        }
+    }).state('tabs.detail-history',{
+        url:'/detail-history',
+        views:{
+            'tab-history':{
+                templateUrl:'template/detail.html',
+                controller:'detail'
             }
         }
     }).state('tabs.setting',{
@@ -80,7 +88,7 @@ app.controller('homeCtr',function($scope,$ionicModal){
     }
     $ionicModal.fromTemplateUrl('template/login.html', {
         scope: $scope,
-        animation:'slide-in-up'
+        animation:'slide-in-right'
     }).then(function(modal){
         $scope.modal = modal;
     })
@@ -97,7 +105,7 @@ app.controller('login',function($scope){
 app.controller('setting',function($scope,$ionicModal){
     $ionicModal.fromTemplateUrl('template/buy.html', {
         scope: $scope,
-        animation:'slide-in-up'
+        animation:'slide-in-right'
     }).then(function(modal){
         $scope.modal = modal;
     })
@@ -126,7 +134,7 @@ app.controller('buy',function($scope,$ionicPopup){
 app.controller('detail',function($scope,$ionicModal){
     $ionicModal.fromTemplateUrl('template/regist.html', {
         scope: $scope,
-        animation:'slide-in-up'
+        animation:'slide-in-right'
     }).then(function(modal){
         $scope.modal = modal;
     })

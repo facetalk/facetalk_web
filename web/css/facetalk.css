@@ -3,3 +3,18 @@
 .blue{background:blue;}
 .yellow{background:yellow;}
 .pink{background:pink;}
+
+.ion-flex{display:flex;width:100%;margin:0 auto;text-align:center;flex-wrap:wrap;}
+.ion-flex a{display:block;width:33%;position:relative;text-align:center;margin:5px 0;}
+.ion-flex img{width:100px;border-radius:10px;border:solid 1px #666;box-shadow:1px 1px 1px #666}
+.ion-circle{position:absolute;right:0;top:0;display:block;width:10px;height:10px;border-radius:5px;}
+
+.detail{text-align:center;}
+.detail .pic{margin:20px;}
+.detail img{width:200px;border-radius:10px;border:solid 1px #666;box-shadow:1px 1px 1px #666}
+
+.myinfo{}
+.myinfo img{width:80px;border-radius:10px;border:solid 1px #666;box-shadow:1px 1px 1px #666;vertical-align:middle}
+.myinfo strong{margin-left:10px;}
+
+.buy .buy-input span{padding-left:8px;}
