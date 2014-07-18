@@ -18,3 +18,6 @@
 .myinfo strong{margin-left:10px;}
 
 .buy .buy-input span{padding-left:8px;}
+
+.chat{text-align:center}
+.chat video{width:200px;min-height:150px;margin-top:10px;border:solid 1px #666;box-shadow:2px 2px 2px #666}
