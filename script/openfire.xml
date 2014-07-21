@@ -1,0 +1,25 @@
+<jdbcProvider>
+    <driver>com.mysql.jdbc.Driver</driver>
+    <connectionString>jdbc:mysql://localhost:3306/facehu?user=root</connectionString>
+  </jdbcProvider>
+<provider>
+  <auth>
+    <className>org.jivesoftware.openfire.auth.JDBCAuthProvider</className>
+  </auth>
+  <user>
+    <className>org.jivesoftware.openfire.user.JDBCUserProvider</className>
+  </user>
+</provider>
+<jdbcAuthProvider>
+   <passwordSQL>SELECT password FROM fh_user WHERE username=?</passwordSQL>
+   <passwordType>plain</passwordType>
+</jdbcAuthProvider>
+<jdbcUserProvider>
+   <loadUserSQL>SELECT name,email FROM fh_user WHERE username=?</loadUserSQL>
+   <userCountSQL>SELECT COUNT(*) FROM fh_user</userCountSQL>
+   <allUsersSQL>SELECT username FROM fh_user</allUsersSQL>
+   <searchSQL>SELECT username FROM fh_user WHERE</searchSQL>
+   <usernameField>username</usernameField>
+   <nameField>name</nameField>
+   <emailField>email</emailField>
+</jdbcUserProvider>

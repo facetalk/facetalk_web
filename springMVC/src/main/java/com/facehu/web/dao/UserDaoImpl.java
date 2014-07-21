@@ -33,6 +33,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @Transactional
     public void updateUser(User user) {
         sessionFactory.getCurrentSession().update(user);
     }

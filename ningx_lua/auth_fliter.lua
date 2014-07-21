@@ -6,9 +6,9 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local authoCookieName = "_ft_autho"
-local authsessionCookieName = "_ft_authsession"
-local usernameCookieName = "_ft_username"
+local authoCookieName = "_fh_autho"
+local authsessionCookieName = "_fh_authsession"
+local usernameCookieName = "_fh_username"
 local autho = ngx.var["cookie_" .. authoCookieName]
 local authsession = ngx.var["cookie_" .. authsessionCookieName]
 local username = ngx.var["cookie_" .. usernameCookieName]

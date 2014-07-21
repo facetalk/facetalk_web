@@ -91,12 +91,6 @@
             <version>4.2.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>ca.mgamble.xmpp</groupId>
-            <artifactId>XMPPPrebind</artifactId>
-            <version>1.0.1-RELEASE</version>
-        </dependency>
-
 
         <dependency>
             <groupId>javax.servlet.jsp</groupId>

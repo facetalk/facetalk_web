@@ -1,5 +1,8 @@
 package com.facehu.web.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +23,22 @@ public class CtlHelp {
         Pattern regex = Pattern.compile(check);
         Matcher matcher = regex.matcher(email);
         return matcher.matches();
+    }
+
+
+    static public void writePicToFile(String picDate, String fileName) throws IOException {
+        File file = new File(fileName);
+
+        FileOutputStream fop = new FileOutputStream(file);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+
+        byte[] contentInBytes = picDate.getBytes();
+        fop.write(contentInBytes);
+        fop.flush();
+        fop.close();
+
     }
 
 

@@ -29,7 +29,7 @@ CREATE TABLE `fh_user` (
   `info_completeness`  TINYINT(4) DEFAULT '0'
   COMMENT '信息完成度，0 基本信息 1 完成头像',
 
-  `creation_time`      TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `creation_time`      TIMESTAMP          NOT NULL  DEFAULT 0
   COMMENT '创建时间',
   `modification_time`  TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   COMMENT '更新时间',
@@ -58,6 +58,98 @@ CREATE TABLE `fh_product` (
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8;
+
+
+DROP TABLE IF EXISTS `fh_groups`;
+CREATE TABLE `fh_groups` (
+  `group_name`  VARCHAR(255) NOT NULL
+  COMMENT '兼容openfire',
+  `description` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`group_name`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
+
+
+DROP TABLE IF EXISTS `fh_groupusers`;
+CREATE TABLE `fh_groupusers` (
+  `group_name`    VARCHAR(50)  NOT NULL
+  COMMENT '对应于groups表的groupName',
+  `username`      VARCHAR(100) NOT NULL
+  COMMENT '对应于user表的username',
+  `administrator` TINYINT(4)   NOT NULL
+  COMMENT '是否是管理员, 1是, 0否',
+  PRIMARY KEY (`group_name`, `username`, `administrator`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
+
+
+-- 修改openfire认证部分
+DELETE FROM `openfire`.`ofProperty`
+WHERE name =
+      'jdbcprovider.driver'
+      OR name =
+         'jdbcprovider.connectionstring'
+      OR name =
+         'admin.authorizedjids'
+      OR name =
+         'jdbcauthprovider.passwordsql'
+      OR name =
+         'jdbcauthprovider.passwordtype'
+      OR name =
+         'jdbcuserprovider.alluserssql'
+      OR name =
+         'jdbcuserprovider.loadusersql'
+      OR name =
+         'jdbcuserprovider.usercountsql'
+      OR name =
+         'jdbcuserprovider.searchsql'
+      OR name =
+         'jdbcuserprovider.usernamefield'
+      OR name =
+         'jdbcuserprovider.namefield'
+      OR name =
+         'jdbcuserprovider.emailfield'
+      OR name =
+         'jdbcgroupprovider.allgroupssql'
+      OR name =
+         'jdbcgroupprovider.descriptionsql'
+      OR name =
+         'jdbcgroupprovider.groupcountsql'
+      OR name =
+         'jdbcgroupprovider.loadadminssql'
+      OR name =
+         'jdbcgroupprovider.loadmemberssql'
+      OR name =
+         'jdbcgroupprovider.usergroupssql'
+      OR name = 'provider.auth.className'
+      OR name = 'provider.group.className'
+      OR name = 'provider.user.className';
+
+
+INSERT INTO `openfire`.`ofProperty` VALUES
+  ('provider.auth.className', 'org.jivesoftware.openfire.auth.JDBCAuthProvider'),
+  ('provider.group.className', 'org.jivesoftware.openfire.group.JDBCGroupProvider'),
+  ('provider.user.className', 'org.jivesoftware.openfire.user.JDBCUserProvider'),
+  ('jdbcProvider.driver', 'com.mysql.jdbc.Driver'),
+  ('jdbcProvider.connectionString', 'jdbc:mysql://localhost:3306/facehu?user=root&password='),
+  ('admin.authorizedJIDs', 'admin@localhost,admin@192.168.0.46,admin@facetalk'),
+  ('jdbcAuthProvider.passwordSQL', 'SELECT password FROM fh_user WHERE username=?'),
+  ('jdbcAuthProvider.passwordType', 'plain'),
+  ('jdbcUserProvider.allUsersSQL', 'SELECT username FROM fh_user'),
+  ('jdbcUserProvider.loadUserSQL', 'SELECT name,email FROM fh_user WHERE username=?'),
+  ('jdbcUserProvider.userCountSQL', 'SELECT COUNT(*) FROM fh_user'),
+  ('jdbcUserProvider.searchSQL', 'SELECT username FROM fh_user WHERE'),
+  ('jdbcUserProvider.usernameField', 'username'),
+  ('jdbcUserProvider.nameField', 'name'),
+  ('jdbcUserProvider.emailField', 'email'),
+  ('jdbcGroupProvider.allGroupsSQL', 'select group_name from fh_groups'),
+  ('jdbcGroupProvider.descriptionSQL', 'select description from fh_groups where group_name=?'),
+  ('jdbcGroupProvider.groupCountSQL', 'select count(*) from fh_groups'),
+  ('jdbcGroupProvider.loadAdminsSQL', 'select username from fh_groupusers where group_name=? and admin=1'),
+  ('jdbcGroupProvider.loadMembersSQL', 'select username from fh_groupusers where group_name=? and admin=0'),
+  ('jdbcGroupProvider.userGroupsSQL', 'select group_name from fh_groupusers where username=?');
 
 
 -- 订单生成

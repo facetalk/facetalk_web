@@ -9,9 +9,9 @@
 
 local password_salt = "Fear not that the life shall come to an end, but rather fear that it shall never have a beginning."
 local cookie_salt = "The greatest test of courage on earth is to bear defeat without losing heart."
-local authoCookieName = "_ft_autho"
-local authsessionCookieName = "_ft_authsession"
-local usernameCookieName = "_ft_username"
+local authoCookieName = "_fh_autho"
+local authsessionCookieName = "_fh_authsession"
+local usernameCookieName = "_fh_username"
 
 --1、先从post请求中得到用户名密码
 
