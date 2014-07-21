@@ -3,13 +3,26 @@
         <a class="button button-positive" ng-click="login()">登录</a>
     </ion-nav-buttons>
     <ion-content>
-        <ion-list>
-            <ion-item class="item-avatar" ng-repeat="item in items" href="#/tab/detail">
-                    <img src="{{item.img}}" />
-                    <h2>{{item.name}}</h2>
-                    <p>在线/不在线</p>
-            </ion-item>
-        </ion-list>
+        <div class="ion-flex">
+            <a href="#/tab/detail"><img src="images/0.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/1.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/2.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/3.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/4.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/5.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/0.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/1.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/2.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/3.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/4.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/5.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/0.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/1.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/2.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/3.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/4.jpg"/></a>
+            <a href="#/tab/detail"><img src="images/5.jpg"/></a>
+        </div>
         <ion-infinite-scroll on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
     </ion-content>
 </ion-view>
