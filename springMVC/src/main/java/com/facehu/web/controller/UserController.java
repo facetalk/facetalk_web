@@ -7,12 +7,14 @@ import com.facehu.web.model.User;
 import com.facehu.web.util.CtlHelp;
 import com.facehu.web.util.Logger;
 import com.facehu.web.util.MD5;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -103,10 +105,10 @@ public class UserController {
     public AjaxResult userSavePic(@RequestParam("picData") String picData, @RequestParam("username") String username) {
 
         Logger.debug(this, username);
-        Logger.debug(this, picData);
-        String fileName = avaterPath + username.substring(2) + File.pathSeparator + username + ".png";
+//        Logger.debug(this, picData.substring(22));
+        String fileName = avaterPath + username.substring(0, 2) + File.separator + username + ".png";
         try {
-            CtlHelp.writePicToFile(picData, fileName);
+            writePicToFile(picData.substring(22), fileName);
             User user = userDao.getUserByName(username);
             user.setInfoCompleteness(1); // 1完成照片这一步 0完成基本信息
             userDao.updateUser(user);
@@ -237,5 +239,20 @@ public class UserController {
         }
     }
 
+
+    public void writePicToFile(String picDate, String fileName) throws IOException {
+        File file = new File(fileName);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        FileOutputStream fop = new FileOutputStream(file);
+
+
+        byte[] contentInBytes = Base64.decodeBase64(picDate);
+        fop.write(contentInBytes);
+        fop.flush();
+        fop.close();
+
+    }
 
 }
