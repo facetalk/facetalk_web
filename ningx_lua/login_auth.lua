@@ -87,9 +87,7 @@ ngx.header['Set-Cookie'] = { usernameCookie, authoCookie, authsessionCookie }
 
 --存入redis
 local redis_res = ngx.location.capture("/redis_set?key=" .. username .. "&val=" .. autho .. "|" .. authsession)
-ngx.say(redis_res.body)
-res = ngx.location.capture("/ok.html")
 
-ngx.print(res.body)
+ngx.exit(ngx.HTTP_OK)
 
 
