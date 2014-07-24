@@ -57,14 +57,14 @@ end
 
 if table.getn(res) == 0 then
     -- todo 提示登陆失败
-    ngx.say("查无此人")
+    ngx.say('{"status":"failure","desc":"查无此人"}')
     return
 end
 
 local username = res[1].username
 if res[1].password ~= passwordMd5 then
     -- todo 提示登陆失败
-    ngx.say("密码或用户名不对");
+    ngx.say('{"status":"failure","desc":"密码或用户名不对"}');
     return
 end
 
@@ -92,6 +92,6 @@ ngx.header['Set-Cookie'] = { usernameCookie, authoCookie, authsessionCookie }
 -- 存入redis
 local redis_res = ngx.location.capture("/redis_set?key=" .. username .. "&val=" .. autho .. "|" .. authsession)
 
-ngx.say("ok")
+ngx.say('{"status":"success","desc":"登陆成功"}')
 
 
