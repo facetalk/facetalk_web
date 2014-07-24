@@ -106,7 +106,7 @@ public class UserController {
 
         Logger.debug(this, username);
 //        Logger.debug(this, picData.substring(22));
-        String fileName = avaterPath + username.substring(0, 2) + File.separator + username + ".png";
+        String fileName = avaterPath + File.separator + username + ".png";
         try {
             writePicToFile(picData.substring(22), fileName);
             User user = userDao.getUserByName(username);
