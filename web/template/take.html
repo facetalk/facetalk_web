@@ -1,0 +1,27 @@
+<div class="modal take" ng-controller="take">
+    <ion-header-bar class="bar bar-positive">
+        <button class="button button-clear" ng-click="back()">取消</button>
+        <h1 class="title">完成注册</h1>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list card">
+            <div class="item item-divider">设置图像</div>
+            <div class="item video">
+                <video id="face" autoplay></video>
+            </div>
+        </div>
+        <div class="buttons">
+            <div id="take">
+                <a class="shoot" ng-click="taking()"></a>
+            </div>
+            <div id="choose" class="row hidden">
+                <div class="col">
+                    <a class="confirm" ng-click="choose()"></a>
+                </div>
+                <div class="col">
+                    <a class="cancel" ng-click="reset()"></a>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</div>
