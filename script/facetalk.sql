@@ -43,18 +43,17 @@ CREATE TABLE `fh_user` (
 
 DROP TABLE IF EXISTS `fh_product`;
 CREATE TABLE `fh_product` (
-  `id`             BIGINT(20)   NOT NULL AUTO_INCREMENT,
-  `product_name`   VARCHAR(20)  NOT NULL
+  `name`          VARCHAR(20)  NOT NULL
   COMMENT '产品名称 ',
-  `product_price`  INT(11) DEFAULT '0'
+  `price`         INT(11) DEFAULT '0'
   COMMENT '产品价格，单位是分',
-  `product_status` INT(11) DEFAULT '1'
+  `status`        INT(11) DEFAULT '1'
   COMMENT '产品状态：0 失效，1 有效',
-  `product_desc`   VARCHAR(255) NULL
+  `desc`          VARCHAR(255) NULL
   COMMENT '产品说明',
-  `creation_time`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `creation_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
   COMMENT '创建日期',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`name`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8;
@@ -158,28 +157,79 @@ CREATE TABLE `fh_order` (
   `id`                VARCHAR(64)  NOT NULL
   COMMENT ' id ',
   `username`          VARCHAR(255) NOT NULL
-  COMMENT '操作用户',
-  `product_id`        INT(11)      NOT NULL
-  COMMENT '产品id',
+  COMMENT '用户',
   `product_name`      VARCHAR(20)  NOT NULL
+  COMMENT '产品id',
+  `product_desc`      VARCHAR(20)  NOT NULL
   COMMENT '产品名称 ',
-  `product_count`     INT(11)      NOT NULL
+  `product_amount`    INT(11)      NOT NULL
   COMMENT '产品数量',
   `total_cost`        INT(11) DEFAULT '0'
   COMMENT '总花费单位是分',
   `pay_status`        INT(11) DEFAULT '0'
-  COMMENT '支付状态：0 待支付，1 已提交支付 2 支付完成',
+  COMMENT '支付状态：0 未确认，1 已提交支付 2 支付完成 3 支付失败',
   `bank`              VARCHAR(50) DEFAULT NULL
   COMMENT '支付的银行代码',
   `pay_way`           INT(11) DEFAULT '0'
   COMMENT '支付方式,目前只有alipay',
   `order_desc`        VARCHAR(255) NOT NULL
   COMMENT '支付说明',
-  `creation_time`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `creation_time`     TIMESTAMP    NOT NULL DEFAULT 0
   COMMENT '创建时间',
   `modification_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   COMMENT '更新时间',
   PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
+
+
+DROP TABLE IF EXISTS `fh_bill`;
+CREATE TABLE `fh_bill` (
+  `id`                BIGINT(20)   NOT NULL AUTO_INCREMENT,
+  `username`          VARCHAR(255) NOT NULL
+  COMMENT '用户',
+  `product_name`      VARCHAR(20)  NOT NULL
+  COMMENT '产品id',
+  `product_amount`    INT(11)      DEFAULT '0'
+  COMMENT '产品数量，负值为扣减，正值为增加',
+  `type`              INT(11) DEFAULT '2'
+  COMMENT '1 增加 2 消费 ',
+  `gain_way`          INT(11) DEFAULT '0'
+  COMMENT '获得方式 1 购买 2 赠予 3 正常消费 4 系统扣除 ',
+  `correlation_id`    VARCHAR(100) DEFAULT NULL
+  COMMENT '关联id，获得为订单号，扣减为聊天记录id',
+  `bill_desc`              VARCHAR(255) DEFAULT NULL,
+  `flag`              INT(11) DEFAULT '0'
+  COMMENT '0 正常 ,1 消费冻结 ,2 消费冻结取消（等于这条记录不存在） ',
+  `creation_time`     TIMESTAMP    NOT NULL DEFAULT 0
+  COMMENT '创建时间',
+  `modification_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_bill` (`username`, `correlation_id`) USING BTREE
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
+
+
+DROP TABLE IF EXISTS `fh_balance`;
+CREATE TABLE `fh_balance` (
+  `id`                BIGINT(20)   NOT NULL AUTO_INCREMENT,
+  `username`          VARCHAR(255) NOT NULL
+  COMMENT '用户',
+  `product_name`      VARCHAR(20)  NOT NULL
+  COMMENT '产品名称',
+  `current_amount`    INT(11)      NOT NULL
+  COMMENT '产品数量，负值为扣减，正值为增加',
+  `version`           INT(11) DEFAULT '0'
+  COMMENT '乐观锁',
+  `creation_time`     TIMESTAMP    NOT NULL DEFAULT 0
+  COMMENT '创建时间',
+  `modification_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_balance` (`username`, `product_name`) USING BTREE
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8;
@@ -210,7 +260,7 @@ CREATE TABLE `fh_order_pay_res` (
   `buyer_id`          VARCHAR(30) DEFAULT NULL,
   `extra_param`       VARCHAR(100) DEFAULT NULL,
   `agent_user_id`     VARCHAR(100) DEFAULT NULL,
-  `creation_time`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `creation_time`     TIMESTAMP    NOT NULL DEFAULT 0
   COMMENT '创建时间',
   `modification_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   COMMENT '更新时间',

@@ -6,6 +6,7 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <context:component-scan base-package="com.facehu.web.service"/>
     <context:component-scan base-package="com.facehu.web.controller"/>
 
     <mvc:annotation-driven/>
@@ -17,9 +18,10 @@
 
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/facehu"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/facehu?characterEncoding=utf8"/>
         <property name="username" value="root"/>
         <property name="password" value=""/>
+
     </bean>
 
     <bean id="sessionFactory"
@@ -27,17 +29,46 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
     </bean>
-
-    <tx:annotation-driven/>
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="userDao" class="com.facehu.web.dao.UserDaoImpl">
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+    <bean id="userDao" class="com.facehu.web.dao.impl.UserDaoImpl">
         <constructor-arg>
             <ref bean="sessionFactory"/>
         </constructor-arg>
+    </bean>
+
+    <bean id="productDao" class="com.facehu.web.dao.impl.ProductDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="orderDao" class="com.facehu.web.dao.impl.OrderDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="billDao" class="com.facehu.web.dao.impl.BillDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory"/>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="balanceDao" class="com.facehu.web.dao.impl.BalanceDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="BillService" class="com.facehu.web.service.BillServiceImpl">
     </bean>
 
 

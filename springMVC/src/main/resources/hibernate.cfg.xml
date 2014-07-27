@@ -5,6 +5,10 @@
 <hibernate-configuration>
     <session-factory>
         <mapping class="com.facehu.web.model.User"/>
+        <mapping class="com.facehu.web.model.Product"/>
+        <mapping class="com.facehu.web.model.Order"/>
+        <mapping class="com.facehu.web.model.Bill"/>
+        <mapping class="com.facehu.web.model.Balance"/>
     </session-factory>
 
 </hibernate-configuration>

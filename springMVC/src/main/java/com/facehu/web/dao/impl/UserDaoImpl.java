@@ -1,5 +1,6 @@
-package com.facehu.web.dao;
+package com.facehu.web.dao.impl;
 
+import com.facehu.web.dao.UserDao;
 import com.facehu.web.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -46,7 +47,7 @@ public class UserDaoImpl implements UserDao {
         List<User> list = session.createQuery("from User u where u.username = :username")
                 .setParameter("username", username)
                 .list();
-        return list.size() > 0 ? (User) list.get(0) : null;
+        return list.size() > 0 ? list.get(0) : null;
     }
 
 }

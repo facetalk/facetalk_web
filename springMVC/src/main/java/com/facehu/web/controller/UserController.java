@@ -5,6 +5,7 @@ import ca.mgamble.xmpp.prebind.classes.SessionInfo;
 import com.facehu.web.dao.UserDao;
 import com.facehu.web.model.User;
 import com.facehu.web.util.CtlHelp;
+import com.facehu.web.util.CtlHelp.AjaxResult;
 import com.facehu.web.util.Logger;
 import com.facehu.web.util.MD5;
 import org.apache.commons.codec.binary.Base64;
@@ -195,47 +196,6 @@ public class UserController {
 
         public void setRid(String rid) {
             this.rid = rid;
-        }
-    }
-
-
-    /**
-     * json格式的返回状态，一般用在ajax上
-     */
-    public static class AjaxResult {
-
-        public static enum resultState {
-            failure,
-            success
-        }
-
-
-        public resultState status;
-
-        public String desc;
-
-        public AjaxResult(resultState state, String desc) {
-            this.status = state;
-            this.desc = desc;
-        }
-
-        public resultState getStatus() {
-            return status;
-        }
-
-        public void setStatus(resultState status) {
-            this.status = status;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-        public void setDesc(String desc) {
-            this.desc = desc;
-        }
-
-        public AjaxResult() {
         }
     }
 
