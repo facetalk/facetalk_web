@@ -1,5 +1,9 @@
 var app = angular.module('facetalk', ['ionic']);
 
+app.config(function($httpProvider){
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+})
+
 var items = [
     {'name':'张三MM','img':'images/0.jpg'},
     {'name':'李四','img':'images/1.jpg'},
@@ -84,6 +88,7 @@ app.controller('history',function($scope){
 
 app.controller('homeCtr',function($scope,$ionicModal){
     $scope.items = items;
+    $scope.loginBtn = facetalk.user.name ? '':'登录';
     $scope.loadMore = function(){
     }
     $ionicModal.fromTemplateUrl('template/login.html', {
@@ -92,15 +97,122 @@ app.controller('homeCtr',function($scope,$ionicModal){
     }).then(function(modal){
         $scope.modal_login = modal;
     })
-    $scope.login = function(){
+    $scope.showLogin = function(){
         $scope.modal_login.show();
     }
 })
-app.controller('login',function($scope){
+
+app.controller('login',function($scope,$ionicModal,$http){
+    $ionicModal.fromTemplateUrl('template/regist.html', {
+        scope: $scope,
+        animation:'slide-in-right'
+    }).then(function(modal){
+        $scope.modal_regist = modal;
+    })
+
     $scope.back = function(){
         $scope.modal_login.hide();
     }
+    $scope.login = function(form,user){
+        if(form.$valid){
+            var para = 'loginEmail=' + user.loginEmail + '&loginPassword=' + user.loginPassword;
+            $http.post('/login',para).success(function(data){
+                var username = user.loginEmail.replace(/[@\.]/g,'_');
+                $http.get('/api/user/loginForXmpp/' + username).success(function(data){
+                })
+            }).error(function(){
+            })
+        }else{
+            $scope.showLoginValidation = true;
+        }
+    }
+    $scope.regist = function(){
+        $scope.modal_regist.show();
+    }
 })
+app.controller('regist',function($scope,$ionicModal,$http){
+    //拍照
+    $ionicModal.fromTemplateUrl('template/photos.html', {
+        scope: $scope,
+        animation:'slide-in-right'
+    }).then(function(modal){
+        $scope.modal_photos = modal;
+    })
+    $scope.back = function(){
+        $scope.modal_regist.hide();
+    }
+    $scope.next = function(form,user){
+        if(form.$valid){
+            var para = 'name=' + user.name + '&password=' + user.password + '&email=' + user.email;
+            $http.post('/api/user/register',para).success(function(data){
+                $scope.username = user.email.replace(/[@\.]/g,'_');
+            }).error(function(){
+            })
+            $scope.modal_photos.show();;
+        }else{
+            $scope.showRegistValidation = true;
+        }
+    }
+})
+app.controller('photos',function($scope,$ionicModal){
+    $ionicModal.fromTemplateUrl('template/take.html', {
+        scope: $scope,
+        animation:'slide-in-right'
+    }).then(function(modal){
+        $scope.modal_take = modal;
+    })
+    $scope.back = function(){
+        $scope.modal_login.hide();
+        $scope.modal_regist.hide();
+
+        $scope.modal_photos.hide();
+    }
+    $scope.take = function(){
+        $scope.modal_take.show();
+        facetalk.loadVideo(function(stream){
+            var video = document.getElementById("face");
+            window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
+            video.src = window.URL.createObjectURL(stream);
+            $scope.stream = stream;
+        })
+    }
+})
+app.controller('take',function($scope,$http){
+    $scope.back = function(){
+        $scope.stream.stop();
+        webrtc = null;
+        $scope.modal_take.hide();
+    }
+    $scope.taking = function(){
+        var video = document.getElementById('face'),take = document.getElementById('take'),choose = document.getElementById('choose');
+        video.pause();
+        take.className = 'hidden';
+        choose.className = 'row';
+    }
+    $scope.choose = function(){
+        var video = document.getElementById('face'),canvas = document.createElement('canvas');
+        canvas.width = '300';
+        canvas.height = '300';
+        var ctx = canvas.getContext('2d'),para;
+        ctx.drawImage(video,0,0,300,300);
+
+        para = 'username=' + $scope.username + '&picData=' + encodeURIComponent(canvas.toDataURL());
+        $http.post('/api/user/savePic',para).success(function(data){
+            $scope.modal_login.hide();
+            $scope.modal_regist.hide();
+            $scope.modal_photos.hide();
+
+            $scope.back();
+        })
+    }
+    $scope.reset = function(){
+        var video = document.getElementById('face'),take = document.getElementById('take'),choose = document.getElementById('choose');
+        choose.className = 'hidden';
+        take.className = '';
+        video.play();
+    }
+})
+
 
 app.controller('setting',function($scope,$ionicModal){
     $ionicModal.fromTemplateUrl('template/buy.html', {
@@ -132,20 +244,6 @@ app.controller('buy',function($scope,$ionicPopup){
     }
 })
 app.controller('detail',function($scope,$ionicModal){
-    //注册
-    $ionicModal.fromTemplateUrl('template/regist.html', {
-        scope: $scope,
-        animation:'slide-in-right'
-    }).then(function(modal){
-        $scope.modal_regist = modal;
-    })
-    //登陆
-    $ionicModal.fromTemplateUrl('template/login.html', {
-        scope: $scope,
-        animation:'slide-in-right'
-    }).then(function(modal){
-        $scope.modal_login = modal;
-    })
     //聊天
     $ionicModal.fromTemplateUrl('template/chat.html', {
         scope: $scope,
@@ -157,39 +255,33 @@ app.controller('detail',function($scope,$ionicModal){
     $scope.chat = function(){
         $scope.modal_chat.show();
         //开启视频
-        startVideo()
-    }
-    $scope.regist = function(){
-        $scope.modal_regist.show();
-    }
-    $scope.login = function(){
-        $scope.modal_login.show();
+        var webrtc = new SimpleWebRTC({
+            localVideoEl:'local',
+            remoteVideosEl:'remote',
+            autoRequestMedia:true
+        });
+        webrtc.on('readyToCall', function () {
+            webrtc.joinRoom('test');
+        });
+        $scope.webrtc = webrtc;
     }
 })
 
 app.controller('chat',function($scope){
     $scope.back = function(){
+        $scope.webrtc.leaveRoom();
+        $scope.webrtc.stopLocalVideo();
         $scope.modal_chat.hide();
     }
 })
-app.controller('regist',function($scope){
-    $scope.back = function(){
-        $scope.modal_regist.hide();
+
+var facetalk = {
+    user:{
+        name:Storage.cookie.get('_fh_username')
+    },
+    loadVideo:function(success){
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+        navigator.getUserMedia({video:true,audio:false}, success, function(error){});
     }
-})
+}
 
-
-var abc
-function startVideo() {
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-    abc = navigator.getUserMedia({video: true, audio:true}, mediaSuccess, mediaFail);
-}
-function mediaSuccess(userMedia) {
-    window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
-    var video = document.getElementById("local");
-    video.src = window.URL.createObjectURL(userMedia);
-    document.getElementById('chat-devider').innerHTML = '初始化成功，正在通话...';
-}
-function mediaFail(error) {
-    alert('视频设备初始化失败:' + error.code)
-}

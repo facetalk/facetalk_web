@@ -1,13 +1,33 @@
+form.invalid input.ng-invalid{background-color:lightgoldenrodyellow;}
+.hidden{display:none}
+
 .intro{height:80%;}
 .intro_con{height:100%}
+
 .blue{background:blue;}
 .yellow{background:yellow;}
 .pink{background:pink;}
 
+
+/*Home在线列表*/
 .ion-flex{display:flex;width:100%;margin:0 auto;text-align:center;flex-wrap:wrap;}
 .ion-flex a{display:block;width:33%;position:relative;text-align:center;margin:5px 0;}
 .ion-flex img{width:100px;border-radius:10px;border:solid 1px #666;box-shadow:1px 1px 1px #666}
 .ion-circle{position:absolute;right:0;top:0;display:block;width:10px;height:10px;border-radius:5px;}
+
+/*拍照前提醒页*/
+.login .row{width:90%;margin:0 auto;text-align:center;}
+.photos .step{width:90%;text-align:center;padding-top:30%;margin:0 auto;}
+.photos .step p{margin-top:30px;font-size:17px;}
+
+/*拍照页*/
+.take{margin:0 auto;}
+.take .video{margin:10px auto;padding:0;width:300px;height:300px;overflow:hidden;border:solid 1px #666;}
+.take video{width:300px;height:300px;}
+.take .buttons{text-align:center;}
+.take .shoot{background:url(../images/icons/icons.png) left top;height:73px;width:75px;display:block;margin:0 auto;}
+.take .confirm{background:url(../images/icons/icons.png) left -74px;height:33px;width:45px;display:block;margin:0 auto;}
+.take .cancel{background:url(../images/icons/icons.png) left -106px;height:30px;width:40px;display:block;margin:0 auto;}
 
 .detail{text-align:center;}
 .detail .pic{margin:20px;}
@@ -18,6 +38,13 @@
 .myinfo strong{margin-left:10px;}
 
 .buy .buy-input span{padding-left:8px;}
+.buy img{vertical-align:middle}
 
 .chat{text-align:center}
 .chat video{width:200px;min-height:150px;margin-top:10px;border:solid 1px #666;box-shadow:2px 2px 2px #666}
+
+.bar.bar-positive{background-color:#3c579d;}
+.tabs-striped.tabs-positive .tab-item.tab-item-active, .tabs-striped.tabs-positive .tab-item.active, .tabs-striped.tabs-positive .tab-item.activated { color: #3c579d; border-color: #3c579d; }
+.button.button-positive{background-color:#6178af;border-color:#6178af;border-radius:4px;}
+
+.font-small{font-size:14px;}

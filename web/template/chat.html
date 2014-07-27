@@ -2,10 +2,12 @@
     <ion-content>
         <button class="button button-positive bar" ng-click="back()">结束视频</button>
         <div class="list chat">
-            <div class="item">
-                <video id="local" autoplay></video>
+            <div class="item" id="remote">
             </div>
             <div class="item item-devider" id="chat-devider">正在建立通话</div>
+            <div class="item">
+                <video id="local"></video>
+            </div>
         </div>
     </ion-content>
 </div>

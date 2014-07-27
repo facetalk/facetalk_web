@@ -1,26 +1,29 @@
-<div class="modal" ng-controller="regist">
+<div class="modal regist" ng-controller="regist">
     <ion-header-bar class="bar bar-positive">
         <button class="button button-clear" ng-click="back()">取消</button>
-        <h1 class="title">创建</h1>
+        <h1 class="title">创建新用户</h1>
     </ion-header-bar>
     <ion-content>
-        <div class="list">
-            <label class="item item-input">
-                <span class="input-label">电子信箱:</span>
-                <input type="text" placeholder="电子邮箱">
-            </label>
-            <label class="item item-input">
-                <span class="input-label">昵称:</span>
-                <input type="text" placeholder="昵称">
-            </label>
-            <label class="item item-input">
-                <span class="input-label">密码:</span>
-                <input type="password" placeholder="密码">
-            </label>
+        <div class="list list-inset">
+            <form name="registForm" ng-class="showRegistValidation ? 'invalid' : '' ">
+                <div class="item item-divider">基本信息</div>
+                <label class="item item-input">
+                    <span class="input-label">电子信箱:</span>
+                    <input type="email" ng-model="user.email" placeholder="电子邮箱" required/>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">昵称:</span>
+                    <input type="text" placeholder="昵称" ng-model="user.name" required/>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">密码:</span>
+                    <input type="password" placeholder="密码" ng-model="user.password" required/>
+                </label>
+            </form>
         </div>
         <div class="row">
             <div class="col col-33 col-offset-33">
-                <button class="button button-block button-positive">继续</button>
+                <button class="button button-block button-positive" ng-click="next(registForm,user)">下一步</button>
             </div>
         </div>
     </ion-content>
