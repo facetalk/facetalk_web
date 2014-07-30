@@ -73,9 +73,24 @@ public class BillServiceImpl implements BillService {
             }
 
         } while (conflict);
+    }
 
+
+    /**
+     * 消费扣费
+     *
+     * @param userName
+     * @param productName
+     * @param beConsumedUser
+     * @param productAmount
+     * @param desc
+     */
+    @Override
+    @Transactional
+    public void expense(String userName, String productName, String beConsumedUser, int productAmount, String desc) {
 
     }
+
 
     /**
      * 当前账户不可以小于零

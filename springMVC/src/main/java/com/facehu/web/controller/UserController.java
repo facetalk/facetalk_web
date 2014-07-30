@@ -61,7 +61,11 @@ public class UserController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/get/{userName}")
     public User printWelcome(@PathVariable String userName) {
-        return userDao.getUserByName(userName);
+        User user = userDao.getUserByName(userName);
+
+        User returnUser = new User(user.getUsername(), "", user.getName(), user.getEmail(), user.getGender(),
+                user.getSexualOrientation(), user.getIntroduction(), user.getPrice(), user.getInfoCompleteness(), null, null);
+        return returnUser;
     }
 
 

@@ -65,19 +65,19 @@ public class CtlHelp {
 
 
     public static class CreateOrderResult extends AjaxResult {
-        public String orderId;
+        public String id;
 
-        public CreateOrderResult(resultState state, String desc, String orderId) {
+        public CreateOrderResult(resultState state, String desc, String id) {
             super(state, desc);
-            this.orderId = orderId;
+            this.id = id;
         }
 
-        public String getOrderId() {
-            return orderId;
+        public String getId() {
+            return id;
         }
 
-        public void setOrderId(String orderId) {
-            this.orderId = orderId;
+        public void setId(String id) {
+            this.id = id;
         }
 
         public CreateOrderResult() {

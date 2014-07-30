@@ -35,6 +35,9 @@ public class User {
     @Column(name = "introduction")
     private String introduction;
 
+    @Column(name = "price")
+    private String price;
+
 
     @Column(name = "info_completeness")
     private int infoCompleteness;
@@ -50,7 +53,7 @@ public class User {
 
     }
 
-    public User(String username, String password, String name, String email, int gender, int sexualOrientation, String introduction) {
+    public User(String username, String password, String name, String email, int gender, int sexualOrientation, String introduction, String price, int infoCompleteness, Date creationTime, Date modificationTime) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -58,7 +61,12 @@ public class User {
         this.gender = gender;
         this.sexualOrientation = sexualOrientation;
         this.introduction = introduction;
+        this.price = price;
+        this.infoCompleteness = infoCompleteness;
+        this.creationTime = creationTime;
+        this.modificationTime = modificationTime;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -86,20 +94,30 @@ public class User {
         this.infoCompleteness = infoCompleteness;
     }
 
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", gender=" + gender +
-                ", sexualOrientation=" + sexualOrientation +
-                ", introduction='" + introduction + '\'' +
-                ", infoCompleteness=" + infoCompleteness +
-                ", creationTime=" + creationTime +
-                ", modificationTime=" + modificationTime +
-                '}';
+        final StringBuffer sb = new StringBuffer("User{");
+        sb.append("username='").append(username).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", gender=").append(gender);
+        sb.append(", sexualOrientation=").append(sexualOrientation);
+        sb.append(", introduction='").append(introduction).append('\'');
+        sb.append(", price='").append(price).append('\'');
+        sb.append(", infoCompleteness=").append(infoCompleteness);
+        sb.append(", creationTime=").append(creationTime);
+        sb.append(", modificationTime=").append(modificationTime);
+        sb.append('}');
+        return sb.toString();
     }
 
     public String getUsername() {

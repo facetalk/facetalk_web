@@ -9,6 +9,7 @@
         <mapping class="com.facehu.web.model.Order"/>
         <mapping class="com.facehu.web.model.Bill"/>
         <mapping class="com.facehu.web.model.Balance"/>
+        <mapping class="com.facehu.web.model.ChatRecord"/>
     </session-factory>
 
 </hibernate-configuration>

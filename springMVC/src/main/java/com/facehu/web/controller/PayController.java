@@ -1,11 +1,10 @@
 package com.facehu.web.controller;
 
+import com.facehu.web.dao.ChatRecordDao;
 import com.facehu.web.dao.OrderDao;
 import com.facehu.web.dao.ProductDao;
 import com.facehu.web.dao.UserDao;
-import com.facehu.web.model.Order;
-import com.facehu.web.model.Product;
-import com.facehu.web.model.User;
+import com.facehu.web.model.*;
 import com.facehu.web.service.BillService;
 import com.facehu.web.util.CtlHelp;
 import com.facehu.web.util.CtlHelp.CreateOrderResult;
@@ -38,6 +37,9 @@ public class PayController {
 
     @Autowired
     private BillService billService;
+
+    @Autowired
+    private ChatRecordDao chatRecordDao;
 
 
     @ResponseBody
@@ -135,6 +137,23 @@ public class PayController {
     }
 
     @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "getCount/{productName}/{userName}")
+    public Balance getCount(@PathVariable String productName, @PathVariable String userName) {
+
+        Balance balance = billService.getBalanceByUserAndProduct(userName, productName);
+
+        Balance returnBalance = new Balance();
+
+        if (balance != null) {
+            returnBalance.setProductAmount(balance.getProductAmount());
+            returnBalance.setUsername(balance.getUsername());
+            returnBalance.setProductName(balance.getProductName());
+        }
+
+        return returnBalance;
+    }
+
+    @ResponseBody
     @RequestMapping(method = RequestMethod.POST, value = "/system/grant")
     public CtlHelp.AjaxResult systemGrant(@RequestParam("userName") String userName,
                                           @RequestParam("productName") String productName,
@@ -149,6 +168,35 @@ public class PayController {
 
         return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.success, "成功");
     }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/chatrecord/begin/{callingUserName}/{calledUserName}")
+    public CtlHelp.AjaxResult chatRecordBegin(@PathVariable String callingUserName,
+                                              @PathVariable String calledUserName) {
+
+        ChatRecord chatRecord = new ChatRecord();
+        chatRecord.setBeginTime(new Date());
+        chatRecord.setCalledUserName(calledUserName);
+        chatRecord.setCallingUserName(callingUserName);
+        chatRecordDao.saveOrUpdate(chatRecord);
+
+        String id = Integer.toString(chatRecord.getId());
+
+        return new CreateOrderResult(CreateOrderResult.resultState.success, "成功", id);
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/chatrecord/end/{id}")
+    public CtlHelp.AjaxResult chatRecordEnd(@PathVariable int id) {
+
+        ChatRecord chatRecord = chatRecordDao.getChatRecord(id);
+        chatRecord.setFinish_time(new Date());
+        chatRecordDao.saveOrUpdate(chatRecord);
+
+        return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.success, "成功");
+    }
+
+
 
 
 }

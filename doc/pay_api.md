@@ -8,17 +8,17 @@ username 用户名
 amount 购买数量
 product 玫瑰是: rose
 返回值
-{"status":"success","desc":"成功","orderId":"xnidnsiwksysm"}
-{"status":"failure","desc":"用户不存在","orderId":""}
+{"status":"success","desc":"成功","id":"xnidnsiwksysm"}
+{"status":"failure","desc":"用户不存在","id":""}
 提交支付
 说明：将支付信息提交到淘宝，打开一个新页面
 接口：http://www.facehu.com/api/pay/alipay
 POST 参数
-orderId 预支付的时候返回的订单ID
+id 预支付的时候返回的订单ID
 木有返回
 支付状态查询
 说明：查询订单状态，
-接口：http://www.facehu.com/api/pay/orderStatus/{orderId}
+接口：http://www.facehu.com/api/pay/orderStatus/{id}
 get 方式
 返回值
 {"status":"0","desc":"未确认"}
