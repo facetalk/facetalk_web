@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -170,7 +171,7 @@ public class PayController {
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, value = "/chatrecord/begin/{callingUserName}/{calledUserName}")
+    @RequestMapping(method = RequestMethod.GET, value = "/chatRecord/begin/{callingUserName}/{calledUserName}")
     public CtlHelp.AjaxResult chatRecordBegin(@PathVariable String callingUserName,
                                               @PathVariable String calledUserName) {
 
@@ -186,7 +187,7 @@ public class PayController {
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, value = "/chatrecord/end/{id}")
+    @RequestMapping(method = RequestMethod.GET, value = "/chatRecord/end/{id}")
     public CtlHelp.AjaxResult chatRecordEnd(@PathVariable int id) {
 
         ChatRecord chatRecord = chatRecordDao.getChatRecord(id);
@@ -197,6 +198,98 @@ public class PayController {
     }
 
 
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/getChatRecords/{userName}/{firstResult}/{maxResult}")
+    public List<CtlHelp.ChatRecordsResult> getChatRecords(@PathVariable String userName,
+                                                          @PathVariable int firstResult,
+                                                          @PathVariable int maxResult) {
 
+        List<CtlHelp.ChatRecordsResult> results = new ArrayList<CtlHelp.ChatRecordsResult>();
+
+        List<ChatRecord> listChatRecord = chatRecordDao.listChatRecordByUser(userName, firstResult, maxResult);
+
+
+        if (listChatRecord != null) {
+
+            for (ChatRecord chatRecord : listChatRecord) {
+
+                CtlHelp.ChatRecordsResult result = new CtlHelp.ChatRecordsResult();
+                result.setFinish_time(chatRecord.getFinish_time());
+                result.setBeginTime(chatRecord.getBeginTime());
+                result.setSpendProductAmount(chatRecord.getSpendProductAmount());
+                result.setSpendProductName(chatRecord.getSpendProductName());
+
+                String partnerUserName = null;
+
+                if (chatRecord.getCalledUserName().equalsIgnoreCase(userName)) {
+                    //被叫
+                    result.setCallType(CtlHelp.ChatRecordsResult.CallType.called);
+                    partnerUserName = chatRecord.callingUserName;
+
+                } else if (chatRecord.getCallingUserName().equalsIgnoreCase(userName)) {
+                    //主叫
+                    result.setCallType(CtlHelp.ChatRecordsResult.CallType.calling);
+                    partnerUserName = chatRecord.calledUserName;
+
+                }
+
+                result.setPartnerUserName(partnerUserName);
+
+                User user = userDao.getUserByName(partnerUserName);
+
+                if (user == null) {
+                    Logger.error(this, "用户不存在，userName=" + userName);
+                    continue;
+                }
+
+                result.setPartnerName(user.getName());
+                results.add(result);
+            }
+        }
+        return results;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/chatTransaction/{chatRecordId}")
+    public CtlHelp.AjaxResult chatTransaction(@PathVariable int chatRecordId) {
+
+        String productName = "rose";//暂时写死
+        int productAmount = 0;
+
+        ChatRecord chatRecord = chatRecordDao.getChatRecord(chatRecordId);
+
+        if (chatRecord == null) {
+            return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.failure, "没有记录");
+        }
+
+        User user = userDao.getUserByName(chatRecord.calledUserName);
+        if (user.getPrice() == null || user.getPrice().equalsIgnoreCase("")) {
+            return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.success, "不需要收费");
+        }
+
+        try {
+            productAmount = Integer.valueOf(user.getPrice()).intValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.success, "不需要收费");
+        }
+
+        try {
+
+            billService.chatTransaction(chatRecord.callingUserName,
+                    chatRecord.getCalledUserName(), productName, productAmount, chatRecordId);
+        } catch (java.lang.IllegalStateException e) {
+            e.printStackTrace();
+            return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.failure, "余额不足");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.failure, "重复扣费");
+
+        }
+
+        return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.success, "成功");
+    }
 
 }

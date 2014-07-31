@@ -1,5 +1,6 @@
 package com.facehu.web.util;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,6 +113,108 @@ public class CtlHelp {
         }
 
         public OrderStatusResult() {
+        }
+    }
+
+
+    public static class ChatRecordsResult {
+        public static enum CallType {
+            calling,
+            called
+        }
+
+
+        private String partnerUserName;
+        private String partnerName;
+        private CallType callType;
+
+        private String spendProductName;
+        private int spendProductAmount;
+        private Date beginTime;
+        private Date finish_time;
+
+
+        @Override
+        public String toString() {
+            final StringBuffer sb = new StringBuffer("ChatRecordsResult{");
+            sb.append("partnerUserName='").append(partnerUserName).append('\'');
+            sb.append(", partnerName='").append(partnerName).append('\'');
+            sb.append(", callType=").append(callType);
+            sb.append(", spendProductName='").append(spendProductName).append('\'');
+            sb.append(", spendProductAmount=").append(spendProductAmount);
+            sb.append(", beginTime=").append(beginTime);
+            sb.append(", finish_time=").append(finish_time);
+            sb.append('}');
+            return sb.toString();
+        }
+
+        public String getPartnerUserName() {
+            return partnerUserName;
+        }
+
+        public void setPartnerUserName(String partnerUserName) {
+            this.partnerUserName = partnerUserName;
+        }
+
+        public String getPartnerName() {
+            return partnerName;
+        }
+
+        public void setPartnerName(String partnerName) {
+            this.partnerName = partnerName;
+        }
+
+        public CallType getCallType() {
+            return callType;
+        }
+
+        public void setCallType(CallType callType) {
+            this.callType = callType;
+        }
+
+        public String getSpendProductName() {
+            return spendProductName;
+        }
+
+        public void setSpendProductName(String spendProductName) {
+            this.spendProductName = spendProductName;
+        }
+
+        public int getSpendProductAmount() {
+            return spendProductAmount;
+        }
+
+        public void setSpendProductAmount(int spendProductAmount) {
+            this.spendProductAmount = spendProductAmount;
+        }
+
+        public Date getBeginTime() {
+            return beginTime;
+        }
+
+        public void setBeginTime(Date beginTime) {
+            this.beginTime = beginTime;
+        }
+
+        public Date getFinish_time() {
+            return finish_time;
+        }
+
+        public void setFinish_time(Date finish_time) {
+            this.finish_time = finish_time;
+        }
+
+        public ChatRecordsResult() {
+        }
+
+        public ChatRecordsResult(String partnerUserName, String partnerName, CallType callType, String spendProductName, int spendProductAmount, Date beginTime, Date finish_time) {
+            this.partnerUserName = partnerUserName;
+            this.partnerName = partnerName;
+            this.callType = callType;
+            this.spendProductName = spendProductName;
+            this.spendProductAmount = spendProductAmount;
+            this.beginTime = beginTime;
+            this.finish_time = finish_time;
         }
     }
 

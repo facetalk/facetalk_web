@@ -77,18 +77,71 @@ public class BillServiceImpl implements BillService {
 
 
     /**
-     * 消费扣费
+     * 交易
      *
-     * @param userName
+     * @param callingUserName
+     * @param calledUserName
      * @param productName
-     * @param beConsumedUser
      * @param productAmount
-     * @param desc
+     * @param chatRecordId
      */
     @Override
     @Transactional
-    public void expense(String userName, String productName, String beConsumedUser, int productAmount, String desc) {
+    public void chatTransaction(String callingUserName, String calledUserName, String productName,
+                                int productAmount, int chatRecordId) {
 
+        callingTransaction(callingUserName, productName, productAmount, chatRecordId);
+
+        calledTransaction(calledUserName, productName, productAmount, chatRecordId);
+
+    }
+
+
+    private void calledTransaction(String calledUserName, String productName, int productAmount, int chatRecordId) {
+        Bill bill = new Bill();
+        bill.setProductAmount(productAmount);   //消费做负值处理
+        bill.setCreationTime(new Date());
+        bill.setUsername(calledUserName);
+        bill.setProductName(productName);
+        bill.setCorrelationId("called" + "_" + chatRecordId);
+        bill.setFlag(Bill.FLAG_NORMAL);
+        bill.setGainWay(Bill.GAIN_WAY_CONSUME);
+        bill.setType(Bill.BILL_TYPE_ADD);
+
+        boolean conflict = false;
+
+        do {
+            try {
+                createBillandupdateBalance(bill);
+            } catch (org.hibernate.StaleObjectStateException e) {
+                conflict = true;
+                e.printStackTrace();
+            }
+
+        } while (conflict);
+    }
+
+    private void callingTransaction(String callingUserName, String productName, int productAmount, int chatRecordId) {
+        Bill bill = new Bill();
+        bill.setProductAmount(-productAmount);   //消费做负值处理
+        bill.setCreationTime(new Date());
+        bill.setUsername(callingUserName);
+        bill.setProductName(productName);
+        bill.setCorrelationId("calling" + "_" + chatRecordId);
+        bill.setFlag(Bill.FLAG_NORMAL);
+        bill.setGainWay(Bill.GAIN_WAY_CONSUME);
+        bill.setType(Bill.BILL_TYPE_SUB);
+        boolean conflict = false;
+
+        do {
+            try {
+                createBillandupdateBalance(bill);
+            } catch (org.hibernate.StaleObjectStateException e) {
+                conflict = true;
+                e.printStackTrace();
+            }
+
+        } while (conflict);
     }
 
 
@@ -97,7 +150,6 @@ public class BillServiceImpl implements BillService {
      *
      * @param bill
      */
-    @Transactional
     private void createBillandupdateBalance(Bill bill) {
 
         billDao.saveOrUpdateBill(bill);

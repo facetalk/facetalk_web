@@ -19,5 +19,6 @@ public interface BillService {
     void systemGrant(String userName, String productName, int productAmount,
                      String adminName, String desc);
 
-    void expense(String userName, String productName, String beConsumedUser, int productAmount, String desc);
+    void chatTransaction(String callingUserName, String calledUserName, String productName,
+                         int productAmount, int chatRecordId);
 }
