@@ -285,9 +285,15 @@ public class PayController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.failure, "重复扣费");
+            return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.failure, "重复提交");
 
         }
+
+
+        chatRecord.setSpendProductAmount(productAmount);
+        chatRecord.setSpendProductName(productName);
+
+        chatRecordDao.saveOrUpdate(chatRecord);
 
         return new CtlHelp.AjaxResult(CtlHelp.AjaxResult.resultState.success, "成功");
     }

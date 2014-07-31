@@ -168,6 +168,7 @@ public class BillServiceImpl implements BillService {
         }
 
         balance.setProductAmount(balance.getProductAmount() + bill.getProductAmount());
+        balance.setModificationTime(new Date());
 
         balanceDao.saveOrUpdate(balance);
 
