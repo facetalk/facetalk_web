@@ -15,9 +15,11 @@ form.invalid input.ng-invalid{background-color:lightgoldenrodyellow;}
 .ion-flex img{width:100px;border-radius:10px;border:solid 1px #666;box-shadow:1px 1px 1px #666}
 .ion-circle{position:absolute;right:0;top:0;display:block;width:10px;height:10px;border-radius:5px;}
 
+/*登录页*/
+.login .row{width:60%;margin:0 auto;text-align:center;}
+
 /*拍照前提醒页*/
-.login .row{width:90%;margin:0 auto;text-align:center;}
-.photos .step{width:90%;text-align:center;padding-top:30%;margin:0 auto;}
+.photos .step{width:90%;text-align:center;padding-top:20%;margin:0 auto;}
 .photos .step p{margin-top:30px;font-size:17px;}
 
 /*拍照页*/

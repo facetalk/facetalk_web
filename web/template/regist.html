@@ -1,8 +1,5 @@
-<div class="modal regist" ng-controller="regist">
-    <ion-header-bar class="bar bar-positive">
-        <button class="button button-clear" ng-click="back()">取消</button>
-        <h1 class="title">创建新用户</h1>
-    </ion-header-bar>
+<ion-view title="创建新用户" class="regist">
+    <ion-nav-buttons side="left"><button class="button button-clear" ng-click="back()">取消</button></ion-nav-buttons>
     <ion-content>
         <div class="list list-inset">
             <form name="registForm" ng-class="showRegistValidation ? 'invalid' : '' ">
@@ -27,5 +24,5 @@
             </div>
         </div>
     </ion-content>
-</div>
+</ion-view>
 

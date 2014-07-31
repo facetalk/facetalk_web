@@ -1,13 +1,15 @@
-<div class="modal" ng-controller="chat">
+<ion-view title="视频聊天">
+    <ion-nav-buttons side="left">
+        <button class="button button-clear" ng-click="back()">结束</button>
+    </ion-nav-buttons>
     <ion-content>
-        <button class="button button-positive bar" ng-click="back()">结束视频</button>
         <div class="list chat">
             <div class="item" id="remote">
             </div>
-            <div class="item item-devider" id="chat-devider">正在建立通话</div>
+            <div class="item item-devider" id="chat-devider">{{status}}</div>
             <div class="item">
                 <video id="local"></video>
             </div>
         </div>
     </ion-content>
-</div>
+</ion-view>
