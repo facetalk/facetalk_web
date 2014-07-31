@@ -1,8 +1,5 @@
-<div class="modal login" ng-controller="login">
-    <ion-header-bar class="bar bar-positive">
-        <button class="button button-clear" ng-click="back()">取消</button>
-        <h1 class="title">登录</h1>
-    </ion-header-bar>
+<ion-view title="登录" class="login">
+    <ion-nav-buttons ng-if="showBack" side="left"><button class="button button-clear" ng-click="back()">取消</button></ion-nav-buttons>
     <ion-content>
         <div class="list">
             <form name="loginForm" ng-class="showLoginValidation ? 'invalid' : '' ">
@@ -19,9 +16,9 @@
                 <button class="button button-block button-positive" ng-click="login(loginForm,user)">登录</button>
             </div>
             <div class="col col-33 col-offset-33">
-                <button class="button button-block button-positive" ng-click="regist()">注册</button>
+                <a class="button button-block button-positive" href="{{regist}}">注册</a>
             </div>
         </div>
     </ion-content>
-</div>
+</ion-view>
 

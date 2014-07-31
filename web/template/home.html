@@ -1,28 +1,11 @@
 <ion-view title="脸呼">
-    <ion-nav-buttons side="right">
-    <a class="button button-clear font-small" ng-click="showLogin()">{{loginBtn}}</a>
+    <ion-nav-buttons side="right" ng-if="hasLogin()">
+    <a class="button button-clear font-small" href="{{loginUrl}}">登录</a>
     </ion-nav-buttons>
     <ion-content>
         <div class="ion-flex">
-            <a href="#/tab/detail"><img src="images/0.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/1.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/2.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/3.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/4.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/5.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/0.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/1.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/2.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/3.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/4.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/5.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/0.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/1.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/2.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/3.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/4.jpg"/></a>
-            <a href="#/tab/detail"><img src="images/5.jpg"/></a>
+            <a ng-repeat="item in items" href="#/tab/detail/{{item.username}}" jid="{{item.jid}}" id="{{item.username}}"><img src="/avatar/{{item.username}}.png"/></a>
         </div>
-        <ion-infinite-scroll on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
+        <ion-infinite-scroll ng-if="moreDataCanBeLoaded()" on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
     </ion-content>
 </ion-view>

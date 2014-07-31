@@ -1,17 +1,21 @@
 <ion-view title="我的资料">
     <ion-content>
         <div class="myinfo list">
-            <a href="#/tab/editing" class="item item-icon-right">
-                <img src="images/0.jpg"/>
-                <strong class="nickname">青春美女</strong>
+            <a href="#/tab/setting/editing" class="item item-icon-right">
+                <img src="/avatar/{{info.username}}.png"/>
+                <strong class="nickname">{{info.name}}</strong>
                 <i class="icon icon-right ion-ios7-arrow-right"></i>
             </a>
-            <a class="item item-icon-right" ng-click="buy()">
-                当前账户余额:10朵玫瑰
+            <a class="item item-icon-right" href="#/tab/setting/buy">
+                当前账户余额:{{info.count || 0}}朵玫瑰
                 <i class="icon icon-right ion-ios7-arrow-right"></i>
             </a>
-            <a class="item item-icon-right" href="#/tab/resetpwd">
+            <a class="item item-icon-right" href="#/tab/setting/resetpwd">
                 修改密码
+                <i class="icon icon-right ion-ios7-arrow-right"></i>
+            </a>
+            <a class="item item-icon-right" ng-click="logout()">
+                退出
                 <i class="icon icon-right ion-ios7-arrow-right"></i>
             </a>
         </div>
