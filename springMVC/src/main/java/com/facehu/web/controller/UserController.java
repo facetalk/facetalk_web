@@ -97,10 +97,13 @@ public class UserController {
 
         try {
             userDao.addUser(newUser);
-        } catch (Exception e) {
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
             Logger.info(this, "addUser exception e=" + e.getMessage());
             e.printStackTrace();
-            return new AjaxResult(AjaxResult.resultState.failure, "请检查是否重复注册");
+            return new AjaxResult(AjaxResult.resultState.failure, "重复注册");
+        } catch (Exception e) {
+            e.printStackTrace();
+
         }
         return new AjaxResult(AjaxResult.resultState.success, "基本信息注册成功");
     }

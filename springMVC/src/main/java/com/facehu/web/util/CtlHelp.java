@@ -17,7 +17,7 @@ public class CtlHelp {
      * @return
      */
     public static boolean emailCheck(String email) {
-        String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        String check = "^(\\w)+(\\.\\w+)*@(\\w)+((\\.\\w+)+)$";
         Pattern regex = Pattern.compile(check);
         Matcher matcher = regex.matcher(email);
         return matcher.matches();

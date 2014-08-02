@@ -43,25 +43,6 @@ CREATE TABLE `fh_user` (
   DEFAULT CHARSET =utf8
   COLLATE =utf8_bin;
 
--- 产品表
-
-DROP TABLE IF EXISTS `fh_product`;
-CREATE TABLE `fh_product` (
-  `name`          VARCHAR(20)  NOT NULL
-  COMMENT '产品名称 ',
-  `price`         INT(11) DEFAULT '0'
-  COMMENT '产品价格，单位是分',
-  `status`        INT(11) DEFAULT '1'
-  COMMENT '产品状态：0 失效，1 有效',
-  `desc`          VARCHAR(255) NULL
-  COMMENT '产品说明',
-  `creation_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
-  COMMENT '创建日期',
-  PRIMARY KEY (`name`)
-)
-  ENGINE =InnoDB
-  DEFAULT CHARSET =utf8;
-
 
 DROP TABLE IF EXISTS `fh_groups`;
 CREATE TABLE `fh_groups` (
@@ -153,6 +134,27 @@ INSERT INTO `openfire`.`ofProperty` VALUES
   ('jdbcGroupProvider.loadAdminsSQL', 'select username from fh_groupusers where group_name=? and admin=1'),
   ('jdbcGroupProvider.loadMembersSQL', 'select username from fh_groupusers where group_name=? and admin=0'),
   ('jdbcGroupProvider.userGroupsSQL', 'select group_name from fh_groupusers where username=?');
+
+
+-- 产品表
+
+DROP TABLE IF EXISTS `fh_product`;
+CREATE TABLE `fh_product` (
+  `name`          VARCHAR(20)  NOT NULL
+  COMMENT '产品名称 ',
+  `price`         INT(11) DEFAULT '0'
+  COMMENT '产品价格，单位是分',
+  `status`        INT(11) DEFAULT '1'
+  COMMENT '产品状态：0 失效，1 有效',
+  `desc`          VARCHAR(255) NULL
+  COMMENT '产品说明',
+  `creation_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+  COMMENT '创建日期',
+  PRIMARY KEY (`name`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
+
 
 
 -- 订单生成
