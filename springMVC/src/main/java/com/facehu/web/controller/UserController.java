@@ -79,7 +79,7 @@ public class UserController {
             return new AjaxResult(AjaxResult.resultState.failure, "邮箱验证错误");
         }
 
-        String username = newUser.getEmail().replace("@", "_").replace(".", "_");
+        String username = MD5.parseStrToMd5L16(newUser.getEmail());
 
         //生成密码
 
