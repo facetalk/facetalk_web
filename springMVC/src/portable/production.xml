@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<portable-config>
+    <config-file path="WEB-INF/classes/facetalk.properties">
+        <replace key="bosh.jabberHost">www.facehu.com</replace>
+        <replace key="avaterPath">/opt/facetalk_web/avatar</replace>
+    </config-file>
+    <config-file path="WEB-INF/mvc-dispatcher-servlet.xml">
+        <replace xpath="//bean[@id='dataSource']/property[@name='password']/@value">facehu</replace>
+    </config-file>
+</portable-config>
