@@ -31,7 +31,7 @@
             <id>production</id>
             <properties>
                 <profiles.active>production</profiles.active>
-                <profiles.packagePath>/opt/facetalk_web/java_production</profiles.packagePath>
+                <profiles.packagePath>/opt/facehu-web/java_production</profiles.packagePath>
             </properties>
         </profile>
     </profiles>
