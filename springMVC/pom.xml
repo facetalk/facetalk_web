@@ -7,6 +7,35 @@
     <version>0.1-SNAPSHOT</version>
     <name>facetalk_web</name>
 
+    <profiles>
+        <profile>
+            <!-- 本地开发环境 -->
+            <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active>
+                <profiles.packagePath>target</profiles.packagePath>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <!-- 测试环境 -->
+            <id>test</id>
+            <properties>
+                <profiles.active>test</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <!-- 生产环境 -->
+            <id>production</id>
+            <properties>
+                <profiles.active>production</profiles.active>
+                <profiles.packagePath>/opt/facetalk_web/java_production</profiles.packagePath>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
         <spring.version>4.0.3.RELEASE</spring.version>
         <java.version>1.7</java.version>
@@ -129,6 +158,21 @@
         <finalName>facetalk_web</finalName>
         <plugins>
             <plugin>
+                <groupId>com.juvenxu.portable-config-maven-plugin</groupId>
+                <artifactId>portable-config-maven-plugin</artifactId>
+                <version>1.1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>replace-package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <portableConfig>src/portable/${profiles.active}.xml</portableConfig>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <includes>
@@ -150,6 +194,9 @@
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.0.2</version>
+                <configuration>
+                    <outputDirectory>${profiles.packagePath}</outputDirectory>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>

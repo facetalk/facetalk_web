@@ -117,7 +117,7 @@ INSERT INTO `openfire`.`ofProperty` VALUES
   ('provider.group.className', 'org.jivesoftware.openfire.group.JDBCGroupProvider'),
   ('provider.user.className', 'org.jivesoftware.openfire.user.JDBCUserProvider'),
   ('jdbcProvider.driver', 'com.mysql.jdbc.Driver'),
-  ('jdbcProvider.connectionString', 'jdbc:mysql://localhost:3306/facehu?user=root&password='),
+  ('jdbcProvider.connectionString', 'jdbc:mysql://localhost:3306/facehu?user=root&password=facehu'),
   ('admin.authorizedJIDs', 'admin@localhost,admin@192.168.0.46,admin@facetalk'),
   ('jdbcAuthProvider.passwordSQL', 'SELECT password FROM fh_user WHERE username=?'),
   ('jdbcAuthProvider.passwordType', 'plain'),

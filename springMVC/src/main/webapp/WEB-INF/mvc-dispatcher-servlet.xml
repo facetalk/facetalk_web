@@ -21,7 +21,6 @@
         <property name="url" value="jdbc:mysql://localhost:3306/facehu?characterEncoding=utf8"/>
         <property name="username" value="root"/>
         <property name="password" value=""/>
-
     </bean>
 
     <bean id="sessionFactory"

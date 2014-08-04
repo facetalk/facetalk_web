@@ -16,3 +16,6 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
+
+deploy
+deploy/facetalk_web.war
