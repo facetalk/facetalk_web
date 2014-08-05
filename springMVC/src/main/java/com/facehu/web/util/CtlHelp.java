@@ -64,6 +64,33 @@ public class CtlHelp {
         }
     }
 
+    public static class RegisterResult extends AjaxResult {
+        public String userName;
+
+        /**
+         * @param state
+         * @param desc
+         * @param userName
+         */
+        public RegisterResult(resultState state, String desc, String userName) {
+            super(state, desc);
+            this.userName = userName;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public RegisterResult() {
+
+        }
+    }
+
 
     public static class CreateOrderResult extends AjaxResult {
         public String id;

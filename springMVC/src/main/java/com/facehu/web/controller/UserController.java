@@ -71,12 +71,12 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.POST, value = "/register")
-    public AjaxResult userRegister(User newUser) {
+    public CtlHelp.RegisterResult userRegister(User newUser) {
 
         //验证邮箱
         if (!CtlHelp.emailCheck(newUser.getEmail())) {
 
-            return new AjaxResult(AjaxResult.resultState.failure, "邮箱验证错误");
+            return new CtlHelp.RegisterResult(CtlHelp.RegisterResult.resultState.failure, "邮箱验证错误", "");
         }
 
         String username = MD5.parseStrToMd5L16(newUser.getEmail());
@@ -100,12 +100,12 @@ public class UserController {
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
             Logger.info(this, "addUser exception e=" + e.getMessage());
             e.printStackTrace();
-            return new AjaxResult(AjaxResult.resultState.failure, "重复注册");
+            return new CtlHelp.RegisterResult(CtlHelp.RegisterResult.resultState.failure, "重复注册", "");
         } catch (Exception e) {
             e.printStackTrace();
 
         }
-        return new AjaxResult(AjaxResult.resultState.success, "基本信息注册成功");
+        return new CtlHelp.RegisterResult(CtlHelp.RegisterResult.resultState.success, "基本信息注册成功", username);
     }
 
     @ResponseBody
