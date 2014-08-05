@@ -6,6 +6,6 @@
 git pull
 
 # 拷贝到指定根目录
-yes | cp -R /opt/src/facetalk_web/web /opt/facehu-web/
+`yes | cp -R /opt/src/facetalk_web/web /opt/facehu-web/`
 
 

@@ -5,10 +5,10 @@
 git pull
 
 # 拷贝nginx配置
-yes | cp -R /opt/src/facetalk_web/ningx_lua/nginx.conf /usr/local/openresty/nginx/conf/
+`yes | cp -R /opt/src/facetalk_web/ningx_lua/nginx.conf /usr/local/openresty/nginx/conf/`
 
 # 拷贝lua脚本
-yes | cp -R /opt/src/facetalk_web/ningx_lua/*.lua /usr/local/openresty/nginx/lua_script/
+`yes | cp -R /opt/src/facetalk_web/ningx_lua/*.lua /usr/local/openresty/nginx/lua_script/`
 
 # 编译代码
 cd /opt/src/facetalk_web/springMVC
@@ -22,7 +22,7 @@ sh /opt/server/tomcat/bin/shutdown.sh
 rm -rf /opt/facehu-web/ROOT
 
 # 拷贝war文件
-yes | cp /opt/src/facetalk_web/springMVC/target/facetalk_web.war /opt/facehu-web/java_production/
+`yes | cp /opt/src/facetalk_web/springMVC/target/facetalk_web.war /opt/facehu-web/java_production/`
 
 # 启动tomcat
 sh /opt/server/tomcat/bin/startup.sh
