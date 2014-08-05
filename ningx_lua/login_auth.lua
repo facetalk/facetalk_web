@@ -35,6 +35,7 @@ local ok, err, errno, sqlstate = db:connect {
     port = 3306,
     database = "facehu",
     user = "root",
+    password = "facehu",
     max_packet_size = 1024 * 1024
 }
 
