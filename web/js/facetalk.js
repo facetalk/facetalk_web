@@ -342,7 +342,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                         if($ionicUser.islogin){
                             $http.get('/api/pay/getCount/rose/' + jid).success(function(data){
                                 var amount = data.productAmount;
-                                if(amount >= 1){
+                                if(amount >= 0){
                                     $state.go('tabs.chat',{jid:'@' + jid});
                                 }else{
                                     $ionicTip.show('账户余额不足，请先充值');
@@ -362,7 +362,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                 templateUrl:'template/chat.html',
                 controller:function($scope,$stateParams,$ionicNavBarDelegate,$ionicUser,$ionicXmpp){
                     var jid = ($scope.username = $stateParams.jid),roomid;
-                    var con = $ionicXmpp.connectoin,m_jid = $ionicUser.info.username;
+                    var con = $ionicXmpp.connection,m_jid = $ionicUser.info.username;
                     $scope.status = '正在建立连接 ...'
                     if(!con || !m_jid){
                         $scope.status = '连接失败 ...'
