@@ -66,7 +66,7 @@ app.factory('$ionicUser',function($http,$ionicTip,$ionicXmpp){
 //XMPP信息
 app.factory('$ionicXmpp',function($http,$state){
     return {
-        server:'http://http://42.62.73.61/http-bind',
+        server:'http://42.62.73.61/http-bind',
         xmpp:null,
         connection:null,
         connected:false,
