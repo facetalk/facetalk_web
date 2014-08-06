@@ -12,15 +12,15 @@
             </div>
             <label class="item item-input item-stacked-label buy-input">
                 <span class="input-label">购买玫瑰数(朵)</span>
-                <input type="text" ng-model="buy" placeholder="请输入您要购买的玫瑰数量">
+                <form name="amountForm"><input name="buyAmount" type="number" min="1" required ng-model="amount" placeholder="请输入您要购买的玫瑰数量"></form>
             </label>
             <div class="item item-text-wrap">
-                总计人民币：<span class="total_price">{{buy || 0 * 1}}</span>元
+                总计人民币：<span class="total_price">{{amount || 0 * 1}}</span>元
             </div>
         </div>
         <div class="row">
             <div class="col col-33 col-offset-33">
-                <button class="button button-block button-positive" ng-click="check()">立即购买</button>
+                <button class="button button-block button-positive" ng-click="order(amountForm,amount)">立即购买</button>
             </div>
         </div>
     </ion-content>
