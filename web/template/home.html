@@ -4,7 +4,7 @@
     </ion-nav-buttons>
     <ion-content>
         <div class="ion-flex">
-            <a ng-repeat="item in items" href="#/tab/detail/{{item.username}}" jid="{{item.jid}}" id="{{item.username}}"><img src="/avatar/{{item.username}}.png"/></a>
+            <a ng-if="items" ng-repeat="item in items" href="#/tab/detail/{{item.username}}" jid="{{item.jid}}" id="{{item.username}}"><img src="/avatar/{{item.username}}.png"/></a>
         </div>
         <ion-infinite-scroll ng-if="moreDataCanBeLoaded()" on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
     </ion-content>

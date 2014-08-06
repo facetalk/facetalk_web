@@ -3,8 +3,8 @@
         <ion-list>
         <ion-item class="item-avatar item-icon-right" ng-repeat="item in items" href="#/tab/history/detail/{{item.jid}}">
                     <img src="{{item.img}}" />
-                    <h2>{{item.name}}</h2>
-                    <p>呼入/呼出 2014-07-19</p>
+                    <h2>{{item.partnerName}}</h2>
+                    <p>{{item.type}} {{item.date}}</p>
                     <i class="icon icon-right ion-ios7-arrow-right"></i>
             </ion-item>
         </ion-list>
