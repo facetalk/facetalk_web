@@ -342,7 +342,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                         if($ionicUser.islogin){
                             $http.get('/api/pay/getCount/rose/' + jid).success(function(data){
                                 var amount = data.productAmount;
-                                if(amount >= 1){
+                                if(amount >= 0){
                                     $state.go('tabs.chat',{jid:'@' + jid});
                                 }else{
                                     $ionicTip.show('账户余额不足，请先充值');
