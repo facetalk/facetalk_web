@@ -286,7 +286,7 @@ public class XMPPPrebind {
             Element body = getBodyFromDomDocument(doc);
 
             body.setAttributeNode(getNewTextAttribute(doc, "hold", "1"));
-            body.setAttributeNode(getNewTextAttribute(doc, "to", this.jabberHost));
+            body.setAttributeNode(getNewTextAttribute(doc, "to", this.xmppDomain));
             body.setAttributeNode(getNewTextAttribute(doc, "xmlns:xmpp", XMLNS_BOSH));
             body.setAttributeNode(getNewTextAttribute(doc, "xmpp:version", "1.0"));
             body.setAttributeNode(getNewTextAttribute(doc, "wait", "" + waitTime));
