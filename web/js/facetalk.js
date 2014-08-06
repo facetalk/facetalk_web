@@ -362,7 +362,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                 templateUrl:'template/chat.html',
                 controller:function($scope,$stateParams,$ionicNavBarDelegate,$ionicUser,$ionicXmpp){
                     var jid = ($scope.username = $stateParams.jid),roomid;
-                    var con = $ionicXmpp.connectoin,m_jid = $ionicUser.info.username;
+                    var con = $ionicXmpp.connection,m_jid = $ionicUser.info.username;
                     $scope.status = '正在建立连接 ...'
                     if(!con || !m_jid){
                         $scope.status = '连接失败 ...'
