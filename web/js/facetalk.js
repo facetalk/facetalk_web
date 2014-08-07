@@ -118,7 +118,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
                 }).then(function(res){
                     if(res){
                         con.send(msg.t('ok'))
-                        location.hash = '/tab/chat/' + from.split('@')[0])
+                        location.hash = '/tab/chat/' + from.split('@')[0];
                     }else{
                         con.send(msg.t('no'))
                     }
