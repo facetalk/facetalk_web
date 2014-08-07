@@ -88,16 +88,14 @@ app.factory('$ionicXmpp',function($http,$state){
                 self.connected = true;
                 con.send($pres());
                 con.addHandler(function(message){
-                    console.log(message)
-                    facetalk.message.call(self,message,con)
-                },null,'message','chat');
-                /* con.addHandler(function(message){
                     self.message.call(self,message)
-                },null,'message','chat'); */
+                    return true;
+                },null,'message','chat');
             }else{
             }
         },
         message:function(message){
+            console.log(message);
             var con = this.connection,from = message.getAttribute('from'),signal = message.childNodes[0].innerHTML,status = document.getElementById('detail-status'),btn = document.getElementById('detail-btn');
             var msg = $msg({type:'chat',to:from}).c('body');
 
@@ -683,40 +681,6 @@ var facetalk = {
         var buttons = angular.element(obj).parent().next().children();
         buttons.eq(1).triggerHandler('click');
     },
-    message:function(){
-        var con = this.connection,from = message.getAttribute('from'),signal = message.childNodes[0].innerHTML,status = document.getElementById('detail-status'),btn = document.getElementById('detail-btn');
-        var msg = $msg({type:'chat',to:from}).c('body');
-
-        if(signal == 'status'){//握手状态
-            if(this.busy) con.send(msg.t('busy'));
-            else con.send(msg.t('free'));
-        }else if(signal == 'busy'){
-            status.innerHTML = '在线状态：繁忙'
-            btn.setAttribute('disabled','disabled');
-        }else if(signal == 'free'){
-            status.innerHTML = '在线状态：空闲'
-            btn.removeAttribute('disabled');
-        }
-        if(signal == 'video'){//请求视频
-            $ionicPopup.confirm({
-                title:'提示信息',
-                template:from + '请求和您进行视频聊天，是否同意',
-                okText:'同意',
-                cancelText:'拒绝'
-            }).then(function(res){
-                if(res){
-                    con.send(msg.t('ok'))
-                    $state.go('tabs.chat',from.split('@')[0])
-                }else{
-                    con.send(msg.t('no'))
-                }
-            })
-        }else if(signal == 'ok'){
-        }else if(signal == 'no'){
-        }
-
-        return true;
-    }
     valid:{
         msgs:{
             emailRequired:'邮箱地址不能为空',
