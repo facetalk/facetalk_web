@@ -118,7 +118,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
                 }).then(function(res){
                     if(res){
                         con.send(msg.t('ok'))
-                        $state.go('tabs.chat',from.split('@')[0])
+                        location.hash = '/tab/chat/' + from.split('@')[0])
                     }else{
                         con.send(msg.t('no'))
                     }
@@ -325,8 +325,6 @@ app.config(function($stateProvider,$urlRouterProvider){
                     var waitCon = function(){
                         var connected = $ionicXmpp.connected;
                         if(connected){
-                            console.log(i)
-                            console.log($ionicXmpp.connection)
                             $ionicXmpp.connection.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t('status'));
                         }else{
                             if(i == 10){
