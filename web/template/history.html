@@ -1,7 +1,7 @@
 <ion-view title="聊天记录">
     <ion-content>
         <ion-list>
-        <ion-item class="item-avatar item-icon-right" ng-repeat="item in items" href="#/tab/history/detail/{{item.jid}}">
+        <ion-item class="item-avatar item-icon-right" ng-repeat="item in items" href="#/tab/detail/{{item.partnerUserName}}">
                     <img src="{{item.img}}" />
                     <h2>{{item.partnerName}}</h2>
                     <p>{{item.type}} {{item.date}}</p>

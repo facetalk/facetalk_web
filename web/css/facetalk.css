@@ -1,5 +1,6 @@
 form.invalid input.ng-invalid{background-color:lightgoldenrodyellow;}
 .hidden{display:none}
+img{vertical-align:middle}
 
 .intro{height:80%;}
 .intro_con{height:100%}
@@ -31,9 +32,15 @@ form.invalid input.ng-invalid{background-color:lightgoldenrodyellow;}
 .take .confirm{background:url(../images/icons/icons.png) left -74px;height:33px;width:45px;display:block;margin:0 auto;}
 .take .cancel{background:url(../images/icons/icons.png) left -106px;height:30px;width:40px;display:block;margin:0 auto;}
 
-.detail{text-align:center;}
-.detail .pic{margin:20px;}
-.detail img{width:200px;border-radius:10px;border:solid 1px #666;box-shadow:1px 1px 1px #666}
+.detail{}
+.detail .price,.detail .status{color:green;}
+.detail .pic{text-align:center;}
+.detail .item-image img{width:250px;}
+
+.chat{text-align:center;width:100%;height:100%;background:#666;color:#fff}
+.chat video{position:absolute;right:5px;bottom:5px;height:100px;z-index:2000}
+#remote video{position:absolute;height:100%;z-index:1999;margin:0;padding:0;left:0;top:0}
+#status-info{position:absolute;top:35%;width:100%;}
 
 //Seting页面
 .myinfo{}
@@ -47,8 +54,6 @@ form.invalid input.ng-invalid{background-color:lightgoldenrodyellow;}
 .popForm{position:absolute;width:50%;right:0;bottom:5px;z-index:2000}
 .popForm .button{width:100%;background:none;border:0;padding:5px;}
 
-.chat{text-align:center}
-.chat video{width:200px;min-height:150px;margin-top:10px;border:solid 1px #666;box-shadow:2px 2px 2px #666}
 
 .bar.bar-positive{background-color:#3c579d;}
 .tabs-striped.tabs-positive .tab-item.tab-item-active, .tabs-striped.tabs-positive .tab-item.active, .tabs-striped.tabs-positive .tab-item.activated { color: #3c579d; border-color: #3c579d; }

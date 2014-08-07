@@ -3,13 +3,12 @@
         <button class="button button-clear" ng-click="back()">结束</button>
     </ion-nav-buttons>
     <ion-content>
-        <div class="list chat">
-            <div class="item" id="remote">
+        <div class="chat">
+            <div class="remote">
+                <div id="status-info">{{status}}</div>
+                <div id="remote"></div>
             </div>
-            <div class="item item-devider" id="chat-devider">{{status}}</div>
-            <div class="item">
-                <video id="local"></video>
-            </div>
+            <div class="local"><video id="local"></video></div>
         </div>
     </ion-content>
 </ion-view>
