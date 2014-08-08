@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 
 /**
@@ -116,17 +114,50 @@ public class UserController {
 //        Logger.debug(this, picData.substring(22));
         String fileName = avaterPath + File.separator + username + ".png";
         try {
+            String saveOldCil = "mv " + fileName + " " + fileName + "." + System.currentTimeMillis();
+            linuxCommand(saveOldCil);
+
             writePicToFile(picData.substring(22), fileName);
+            //裁剪图片
+            String fileName80 = avaterPath + File.separator + username + ".80.png";
+
+            String convertCil = "convert -resize 80X80 " + fileName + " " + fileName80;
+            linuxCommand(convertCil);
+
+
             User user = userDao.getUserByName(username);
             user.setInfoCompleteness(1); // 1完成照片这一步 0完成基本信息
             userDao.updateUser(user);
 
             return new AjaxResult(AjaxResult.resultState.success, "成功");
-        } catch (IOException e) {
+        } catch (
+                IOException e
+                )
+
+        {
             e.printStackTrace();
             return new AjaxResult(AjaxResult.resultState.failure, "失败" + e.getMessage());
         }
 
+    }
+
+    private void linuxCommand(String convertCil) {
+        try {
+            Process p = Runtime.getRuntime().exec(convertCil);
+
+            InputStream is = p.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Logger.debug(this, line);
+            }
+            p.waitFor();
+            is.close();
+            reader.close();
+            p.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -204,6 +235,7 @@ public class UserController {
         public void setRid(String rid) {
             this.rid = rid;
         }
+
     }
 
 

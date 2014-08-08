@@ -1,8 +1,6 @@
 package com.facehu.web.util;
 
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by wadang on 14-7-15.
@@ -17,10 +15,11 @@ public class CtlHelp {
      * @return
      */
     public static boolean emailCheck(String email) {
-        String check = "^(\\w)+(\\.\\w+)*@(\\w)+((\\.\\w+)+)$";
-        Pattern regex = Pattern.compile(check);
-        Matcher matcher = regex.matcher(email);
-        return matcher.matches();
+//        String check = "^(\\w)+(\\.\\w+)*@(\\w)+((\\.\\w+)+)$";
+//        Pattern regex = Pattern.compile(check);
+//        Matcher matcher = regex.matcher(email);
+//        return matcher.matches();
+        return true;
     }
 
 
