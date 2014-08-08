@@ -36,6 +36,34 @@ app.factory('$ionicUser',function($http,$ionicTip,$ionicXmpp){
                 if(callback && typeof callback == 'function') callback();
             })
         },
+        getConnection:function(jid,i){
+            var connected = $ionicXmpp.connected,i = i || 0,self = this;
+            if(connected){
+                $ionicXmpp.connection.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t('status'));
+            }else{
+                if(i == 10){
+                    $ionicTip.show('连接超时,请稍后重试');
+                }else{
+                    setTimeout(function(){
+                        self.getConnection(jid,++i)
+                    },500);
+                }
+            }
+        },
+        canChat:function(jid,login,unlogin){
+            if(this.islogin){
+                $http.get('/api/pay/getCount/rose/' + jid).success(function(data){
+                    var amount = data.productAmount;
+                    if(amount >= 0){
+                        login();
+                    }else{
+                        $ionicTip.show('账户余额不足，请先充值');
+                    }
+                })
+            }else{
+                unlogin();
+            }
+        },
         login:function(email,pwd,callback){
             var para = 'loginEmail=' + email + '&loginPassword=' + pwd,self = this;
             $http.post('/login',para).success(function(data){
@@ -96,7 +124,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
         },
         message:function(message){
             console.log(message);
-            var con = this.connection,from = message.getAttribute('from'),signal = message.childNodes[0].innerHTML,status = document.getElementById('detail-status'),btn = document.getElementById('detail-btn');
+            var con = this.connection,from = message.getAttribute('from'),f_jid = from.split('@')[0],signal = message.childNodes[0].innerHTML,status = document.getElementById('detail-status'),btn = document.getElementById('detail-btn');
             var msg = $msg({type:'chat',to:from}).c('body');
 
             if(signal == 'status'){//握手状态
@@ -112,7 +140,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
             if(signal == 'video'){//请求视频
                 $ionicPopup.confirm({
                     title:'提示信息',
-                    template:from + '请求和您进行视频聊天，是否同意',
+                    template:'<div class="row request"><div class="col col-33 col-center"><img src="/avatar/' + f_jid + '.png"/></div><div class="col col-67">' + f_jid + '请求和您进行视频聊天，是否同意</div></div>',
                     okText:'同意',
                     cancelText:'拒绝'
                 }).then(function(res){
@@ -134,7 +162,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
     }
 })
 //Video
-app.factory('$ionicVideo',function($http,$ionicLoading,$ionicUser,$ionicXmpp){
+app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ionicUser,$ionicXmpp){
     var self = this;
     return {
         stream:null,
@@ -188,6 +216,58 @@ app.factory('$ionicVideo',function($http,$ionicLoading,$ionicUser,$ionicXmpp){
             choose.className = 'hidden';
             take.className = '';
             video.play();
+        },
+        initRTC:function(opts){
+            var jid = opts.jid,roomid,isCaller = false,vid,self = this;
+            var con = $ionicXmpp.connection,m_jid = $ionicUser.info.username;
+            if(!con || !jid){
+                $ionicTip.show('连接失败,请退出重试')
+                return;
+            }
+            
+            if(jid.charAt(0) == '@'){//请求某人
+                isCaller = true;
+                jid = jid.substring(1);
+                con.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t('video'));
+                roomid = m_jid + '_' + jid;
+            }else{//同意请求
+                roomid = jid + '_' + m_jid;
+            }
+
+            var webrtc = new SimpleWebRTC({
+                localVideoEl:'local',
+                remoteVideosEl:'remote',
+                autoRequestMedia:true
+            });
+            webrtc.on('readyToCall', function () {
+                $ionicXmpp.busy = true;
+                webrtc.joinRoom(roomid);
+            });
+            webrtc.on('videoAdded',function(){
+                if(!isCaller) return;
+                //记录聊天开始
+                $http.get('/api/pay/chatRecord/begin/' + roomid.replace('_','/')).success(function(data){
+                    vid = data.id;
+                }).error(function(){
+                })
+            }) 
+            webrtc.on('videoRemoved',function(){
+                //离开
+                _$('status-info').innerHTML = '对方终止了聊天，请返回 ...'
+                if(vid){//记录结束时间，并结算
+                    $http.get('/api/pay/chatRecord/end/' + vid);
+                    $http.get('/api/pay/chatTransaction/' + vid);
+                }
+            })
+
+            return webrtc;
+        },
+        cancelRTC:function(webrtc){
+            webrtc.stopLocalVideo();
+            webrtc.leaveRoom();
+            $ionicXmpp.busy = false;
+            $ionicNavBarDelegate.back();
+
         }
     }
 })
@@ -322,41 +402,24 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'tab-home':{
                 templateUrl:'template/detail.html',
-                controller:function($stateParams,$scope,$http,$state,$ionicTip,$ionicUser,$ionicXmpp){
-                    var jid = ($scope.username = $stateParams.jid),i = 0;
-                    var waitCon = function(){
-                        var connected = $ionicXmpp.connected;
-                        if(connected){
-                            $ionicXmpp.connection.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t('status'));
-                        }else{
-                            if(i == 10){
-                                $ionicTip.show('连接超时,请稍后重试');
-                                i = 0;
-                            }else{
-                                setTimeout(waitCon,500);
-                            }
-                            i++;
-                        }
+                controller:function($stateParams,$scope,$http,$state,$ionicUser){
+                    var jid = ($scope.username = $stateParams.jid);
+                    if($ionicUser.isLogin){
+                        $ionicUser.getConnection(jid)//等待连接
+                    }else{
+                        _$('detail-status').innerHTML = '在线';
+                        _$('detail-btn').removeAttribute('disabled');
                     }
-                    waitCon();
-                    //获取用户信息
-                    $http.get('/api/user/get/' + jid).success(function(data){
+                    $http.get('/api/user/get/' + jid).success(function(data){//获取用户信息
                         $scope.info = data;
                     }).error(function(){
                     })
                     $scope.chat = function(){
-                        if($ionicUser.islogin){
-                            $http.get('/api/pay/getCount/rose/' + jid).success(function(data){
-                                var amount = data.productAmount;
-                                if(amount >= 0){
-                                    $state.go('tabs.chat',{jid:'@' + jid});
-                                }else{
-                                    $ionicTip.show('账户余额不足，请先充值');
-                                }
-                            })
-                        }else{
+                        $ionicUser.canChat(jid,function(){
+                            $state.go('tabs.chat',{jid:'@' + jid});
+                        },function(){
                             $state.go('tabs.login');
-                        }
+                        })
                     }
                 }
             }
@@ -366,53 +429,11 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'tab-home':{
                 templateUrl:'template/chat.html',
-                controller:function($scope,$stateParams,$http,$ionicNavBarDelegate,$ionicUser,$ionicXmpp){
-                    var jid = ($scope.username = $stateParams.jid),roomid,isCaller = false,vid;
-                    var con = $ionicXmpp.connection,m_jid = $ionicUser.info.username;
+                controller:function($scope,$stateParams,$ionicVideo,$ionicNavBarDelegate,$ionicXmpp){
                     $scope.status = '正在建立连接(请点击允许访问您的摄像设备) ...'
-                    if(!con || !m_jid){
-                        $scope.status = '连接失败 ...'
-                        return;
-                    }
-                    if(jid.charAt(0) == '@'){//请求某人
-                        isCaller = true;
-                        jid = jid.substring(1);
-                        con.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t('video'));
-                        roomid = m_jid + '_' + jid;
-                    }else{//同意请求
-                        roomid = jid + '_' + m_jid;
-                    }
-                    
-                    var webrtc = new SimpleWebRTC({
-                        localVideoEl:'local',
-                        remoteVideosEl:'remote',
-                        autoRequestMedia:true
-                    });
-                    webrtc.on('readyToCall', function () {
-                        $ionicXmpp.busy = true;
-                        webrtc.joinRoom(roomid);
-                    });
-                    webrtc.on('videoAdded',function(){
-                        if(!isCaller) return;
-                        //记录聊天开始
-                        $http.get('/api/pay/chatRecord/begin/' + roomid.replace('_','/')).success(function(data){
-                            vid = data.id;
-                        }).error(function(){
-                        })
-                    }) 
-                    webrtc.on('videoRemoved',function(){
-                        //离开
-                        _$('status-info').innerHTML = '对方终止了聊天，请返回 ...'
-                        if(!vid) return;
-                        //记录结束时间，并结算
-                        $http.get('/api/pay/chatRecord/end/' + vid);
-                        $http.get('/api/pay/chatTransaction/' + vid);
-                    })
+                    webrtc = $ionicVideo.initRTC($stateParams);
                     $scope.back = function(){
-                        webrtc.leaveRoom();
-                        webrtc.stopLocalVideo();
-                        $ionicXmpp.busy = false;
-                        $ionicNavBarDelegate.back();
+                        $ionicVideo.cancelRTC(webrtc)
                     }
                 }
             }
@@ -518,6 +539,42 @@ app.config(function($stateProvider,$urlRouterProvider){
                         $scope.items = data;
                     }).error(function(){
                     })
+                }
+            }
+        }
+    }).state('tabs.history.detail',{
+        url:'/detail/:jid',
+        views:{
+            'history':{
+                templateUrl:'template/detail.html',
+                controller:function($stateParams,$scope,$http,$state,$ionicTip,$ionicUser,$ionicXmpp){
+                    var jid = ($scope.username = $stateParams.jid);
+                    $ionicUser.getConnection(jid)//等待连接
+                    $http.get('/api/user/get/' + jid).success(function(data){//获取用户信息
+                        $scope.info = data;
+                    }).error(function(){
+                    })
+                    $scope.chat = function(){
+                        $ionicUser.canChat(jid,function(){
+                            $state.go('tabs.history.chat',{jid:'@' + jid});
+                        },function(){
+                            $state.go('tabs.history.login');
+                        })
+                    }
+                }
+            }
+        }
+    }).state('tabs.history.chat',{
+        url:'/chat/:jid',
+        views:{
+            'history':{
+                templateUrl:'template/chat.html',
+                controller:function($scope,$stateParams,$ionicVideo,$ionicNavBarDelegate,$ionicXmpp){
+                    $scope.status = '正在建立连接(请点击允许访问您的摄像设备) ...'
+                    webrtc = $ionicVideo.initRTC($stateParams);
+                    $scope.back = function(){
+                        $ionicVideo.cancelRTC(webrtc)
+                    }
                 }
             }
         }
@@ -699,6 +756,8 @@ var facetalk = {
         var pop = angular.element(obj).parent().parent();
         var buttons = angular.element(obj).parent().next().children();
         buttons.eq(1).triggerHandler('click');
+    },
+    chat:function(){
     },
     valid:{
         msgs:{

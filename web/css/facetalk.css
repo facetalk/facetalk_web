@@ -41,6 +41,7 @@ img{vertical-align:middle}
 .chat video{position:absolute;right:5px;bottom:5px;height:100px;z-index:2000}
 #remote video{position:absolute;height:100%;z-index:1999;margin:0;padding:0;left:0;top:0}
 #status-info{position:absolute;top:35%;width:100%;}
+.request img{width:100%;border:solid 1px #666}
 
 //Seting页面
 .myinfo{}
