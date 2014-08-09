@@ -49,6 +49,8 @@ img{vertical-align:middle}
 .myinfo .img img{width:80px;border:solid 1px #333;vertical-align:middle}
 .myinfo strong{margin-left:10px;}
 
+.buyinfo{margin:20px 10px;font-size:16px;}
+.buyinfo .buyCon{text-indent:32px;}
 .buy .buy-input span{padding-left:8px;}
 .buy img{vertical-align:middle}
 

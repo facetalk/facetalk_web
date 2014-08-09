@@ -3,6 +3,8 @@ var _$ = function(id){
     return document.getElementById(id);
 }
 
+location.hash = '/tab/home';
+
 app.config(function($httpProvider){
     $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 })
@@ -438,7 +440,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                         _$('detail-status').innerHTML = '在线';
                         _$('detail-btn').removeAttribute('disabled');
                     }
-                    $http.get('/xmpp/user/status/' + jid + '/xml').success(function(data){
+                    $http.get('/xmpp/user/status/' + jid + '@facetalk/xml').success(function(data){
                         if(/(?:error|unavailable)/.test(data)){
                             _$('detail-status').innerHTML = '不在线';
                         }
@@ -743,6 +745,13 @@ app.config(function($stateProvider,$urlRouterProvider){
                         $state.go('tabs.setting.login');
                     }
                 }
+            }
+        }
+    }).state('tabs.setting.buyinfo',{
+        url:'/buyinfo',
+        views:{
+            'setting':{
+                templateUrl:'template/buyinfo.html'
             }
         }
     }).state('tabs.setting.buy',{
