@@ -114,6 +114,7 @@ public class UserController {
 //        Logger.debug(this, picData.substring(22));
         String fileName = avaterPath + File.separator + username + ".png";
         try {
+            //移动旧图片
             String saveOldCil = "mv " + fileName + " " + fileName + "." + System.currentTimeMillis();
             linuxCommand(saveOldCil);
 
@@ -130,11 +131,7 @@ public class UserController {
             userDao.updateUser(user);
 
             return new AjaxResult(AjaxResult.resultState.success, "成功");
-        } catch (
-                IOException e
-                )
-
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             return new AjaxResult(AjaxResult.resultState.failure, "失败" + e.getMessage());
         }

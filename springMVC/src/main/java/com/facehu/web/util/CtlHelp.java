@@ -1,12 +1,15 @@
 package com.facehu.web.util;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by wadang on 14-7-15.
  */
 
 public class CtlHelp {
+
+
+    public static SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 邮箱验证
@@ -156,8 +159,8 @@ public class CtlHelp {
 
         private String spendProductName;
         private int spendProductAmount;
-        private Date beginTime;
-        private Date finish_time;
+        private String beginTime;
+        private String finish_time;
 
 
         @Override
@@ -214,26 +217,26 @@ public class CtlHelp {
             this.spendProductAmount = spendProductAmount;
         }
 
-        public Date getBeginTime() {
+        public String getBeginTime() {
             return beginTime;
         }
 
-        public void setBeginTime(Date beginTime) {
+        public void setBeginTime(String beginTime) {
             this.beginTime = beginTime;
         }
 
-        public Date getFinish_time() {
+        public String getFinish_time() {
             return finish_time;
         }
 
-        public void setFinish_time(Date finish_time) {
+        public void setFinish_time(String finish_time) {
             this.finish_time = finish_time;
         }
 
         public ChatRecordsResult() {
         }
 
-        public ChatRecordsResult(String partnerUserName, String partnerName, CallType callType, String spendProductName, int spendProductAmount, Date beginTime, Date finish_time) {
+        public ChatRecordsResult(String partnerUserName, String partnerName, CallType callType, String spendProductName, int spendProductAmount, String beginTime, String finish_time) {
             this.partnerUserName = partnerUserName;
             this.partnerName = partnerName;
             this.callType = callType;
