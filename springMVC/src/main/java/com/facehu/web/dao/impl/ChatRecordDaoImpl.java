@@ -45,7 +45,7 @@ public class ChatRecordDaoImpl implements ChatRecordDao {
     @SuppressWarnings("unchecked")
     public List<ChatRecord> listChatRecordByUser(String userName, int firstResult, int maxResult) {
         Session session = sessionFactory.getCurrentSession();
-        List<ChatRecord> list = session.createQuery("from ChatRecord c where c.calledUserName = :userName or c.callingUserName = :userName  order by  c.finish_time desc ")
+        List<ChatRecord> list = session.createQuery("from ChatRecord c where c.calledUserName = :userName or c.callingUserName = :userName  order by c.beginTime   desc ")
                 .setParameter("userName", userName)
                 .setFirstResult(firstResult)
                 .setMaxResults(maxResult)
