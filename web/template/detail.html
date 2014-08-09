@@ -6,7 +6,7 @@
         <div class="detail list card">
             <div class="item item-divider">
                 <h2>{{info.name}}</h2>
-                <p>身价: <span class="price">{{info.price || 0}}朵</span><img src="images/icons/rose.png"/>&nbsp;&nbsp;状态: <span class="status" id="detail-status">不在线</span></p>
+                <p><span ng-if="info.price">收费用户: <span class="price">与TA聊天需要赠送<span id="price">{{info.price}}</span>朵玫瑰&nbsp;&nbsp;</span></span>状态: <span class="status" id="detail-status">--</span></p>
             </div>
             <div class="item item-image pic">
                 <img src="/avatar/{{username}}.png" />

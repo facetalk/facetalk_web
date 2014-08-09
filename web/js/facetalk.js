@@ -53,11 +53,11 @@ app.factory('$ionicUser',function($http,$ionicTip,$ionicXmpp){
         canChat:function(jid,login,unlogin){
             if(this.islogin){
                 $http.get('/api/pay/getCount/rose/' + jid).success(function(data){
-                    var amount = data.productAmount;
-                    if(amount >= 0){
+                    var amount = data.productAmount,price = _$('price') ? parseInt(_$('price').innerHTML) : 0;
+                    if(amount >= price){
                         login();
                     }else{
-                        $ionicTip.show('账户余额不足，请先充值');
+                        $ionicTip.show('您的玫瑰数量不足，请先购买玫瑰');
                     }
                 })
             }else{
@@ -92,7 +92,7 @@ app.factory('$ionicUser',function($http,$ionicTip,$ionicXmpp){
     }
 })
 //XMPP信息
-app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
+app.factory('$ionicXmpp',function($http,$state,$ionicPopup,$ionicNavBarDelegate,$timeout){
     return {
         server:'http://42.62.73.61/http-bind',
         xmpp:null,
@@ -124,7 +124,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
         },
         message:function(message){
             console.log(message);
-            var con = this.connection,from = message.getAttribute('from'),f_jid = from.split('@')[0],signal = message.childNodes[0].innerHTML,status = document.getElementById('detail-status'),btn = document.getElementById('detail-btn');
+            var con = this.connection,from = message.getAttribute('from'),f_jid = from.split('@')[0],signal = message.childNodes[0].innerHTML,status = document.getElementById('detail-status'),btn = document.getElementById('detail-btn'),self = this;
             var msg = $msg({type:'chat',to:from}).c('body');
 
             if(signal == 'status'){//握手状态
@@ -138,6 +138,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
                 btn.removeAttribute('disabled');
             }
             if(signal == 'video'){//请求视频
+                this.busy = true;
                 $ionicPopup.confirm({
                     title:'提示信息',
                     template:'<div class="row request"><div class="col col-33 col-center"><img src="/avatar/' + f_jid + '.png"/></div><div class="col col-67">' + f_jid + '请求和您进行视频聊天，是否同意</div></div>',
@@ -148,6 +149,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
                         con.send(msg.t('ok'))
                         location.hash = '/tab/chat/' + from.split('@')[0];
                     }else{
+                        self.busy = false;
                         con.send(msg.t('no'))
                     }
                 })
@@ -155,14 +157,20 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup){
                 _$('status-info').innerHTML = '对方同意了您的视频请求,正在建立连接 ...'
             }else if(signal == 'no'){
                 _$('status-info').innerHTML = '对方拒绝您的视频请求 ...'
+                //离开
+                $timeout(function(){
+                    var webrtc = self.webrtc;
+                    webrtc.stopLocalVideo();
+                    webrtc.leaveRoom();
+                    self.busy = false;
+                    $ionicNavBarDelegate.back();
+                },2000)
             }
-
-            return true;
         }
     }
 })
 //Video
-app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ionicUser,$ionicXmpp){
+app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ionicUser,$ionicXmpp,$ionicTip,$timeout){
     var self = this;
     return {
         stream:null,
@@ -194,15 +202,16 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
                 var status = data.status;
                 if(status == 'success'){
                     self.stream.stop();
-                    $ionicLoading.hide();
+                    $ionicLoading.show({template:'您的头像已上传成功,即将返回上一页'});
                     $ionicUser.complete = true;
                     $ionicXmpp.bind.call($ionicXmpp,name);
-                    if(callback && typeof callback == 'function') callback();
+                    //2秒后返回
+                    $timeout(function(){
+                        $ionicLoading.hide();
+                        if(callback && typeof callback == 'function') callback();
+                    },2000)
                 }else{
                     $ionicLoading.show({template:data.desc});
-                    setTimeout(function(){
-                        $ionicLoading.hide();
-                    })
                 }
             }).error(function(){
             })
@@ -225,6 +234,7 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
                 return;
             }
             
+
             if(jid.charAt(0) == '@'){//请求某人
                 isCaller = true;
                 jid = jid.substring(1);
@@ -234,13 +244,13 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
                 roomid = jid + '_' + m_jid;
             }
 
-            var webrtc = new SimpleWebRTC({
+            var webrtc = ($ionicXmpp.webrtc =  new SimpleWebRTC({
+                url:'http://42.62.73.27:8888',
                 localVideoEl:'local',
                 remoteVideosEl:'remote',
                 autoRequestMedia:true
-            });
+            }));
             webrtc.on('readyToCall', function () {
-                $ionicXmpp.busy = true;
                 webrtc.joinRoom(roomid);
             });
             webrtc.on('videoAdded',function(){
@@ -253,11 +263,18 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
             }) 
             webrtc.on('videoRemoved',function(){
                 //离开
-                _$('status-info').innerHTML = '对方终止了聊天，请返回 ...'
+                _$('status-info').innerHTML = '对方终止了聊天，页面即将返回上一页 ...'
                 if(vid){//记录结束时间，并结算
                     $http.get('/api/pay/chatRecord/end/' + vid);
                     $http.get('/api/pay/chatTransaction/' + vid);
                 }
+                $timeout(function(){
+                    self.cancelRTC(webrtc);
+                },2000)
+            })
+            webrtc.on('error', function (peer) {
+                // remote ice failure
+                alert(1)
             })
 
             return webrtc;
@@ -267,7 +284,6 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
             webrtc.leaveRoom();
             $ionicXmpp.busy = false;
             $ionicNavBarDelegate.back();
-
         }
     }
 })
@@ -293,6 +309,7 @@ app.config(function($stateProvider,$urlRouterProvider){
             $scope.back = function(){
                 $ionicNavBarDelegate.back();
             }
+            $scope.isPC = facetalk.isPC();
         }
     })
     
@@ -309,7 +326,6 @@ app.config(function($stateProvider,$urlRouterProvider){
                         var arr = data.split(','),items = [];
                         for(var i = 0; i < arr.length; i++){
                             var jid = arr[i],username = jid.split('@')[0];
-                            if(info && username == info.username) continue;
                             items.push({jid:jid,username:username})
                         }
                         $scope.items = items;
@@ -354,6 +370,10 @@ app.config(function($stateProvider,$urlRouterProvider){
                             facetalk.valid.login(form,$ionicTip);
                         }
                     }
+                    $scope.submit = function(event,form,user){
+                        var keyCode = event.keyCode || event.which;
+                        if(keyCode == 13) $scope.login(form,user);
+                    }
                 }
             }
         }
@@ -362,7 +382,7 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'tab-home':{
                 templateUrl:'template/regist.html',
-                controller:function($scope,$ionicNavBarDelegate,$state,$ionicUser){
+                controller:function($scope,$ionicNavBarDelegate,$state,$ionicUser,$ionicTip){
                     if($ionicNavBarDelegate.getPreviousTitle()) $scope.showBack = true;
                     else $scope.showBack = false;
 
@@ -374,6 +394,10 @@ app.config(function($stateProvider,$urlRouterProvider){
                         }else{
                             facetalk.valid.regist(form,$ionicTip);
                         }
+                    }
+                    $scope.submit = function(event,form,user){
+                        var keyCode = event.keyCode || event.which;
+                        if(keyCode == 13) $scope.next(form,user);
                     }
                 }
             }
@@ -404,18 +428,27 @@ app.config(function($stateProvider,$urlRouterProvider){
                 templateUrl:'template/detail.html',
                 controller:function($stateParams,$scope,$http,$state,$ionicUser){
                     var jid = ($scope.username = $stateParams.jid);
-                    if($ionicUser.isLogin){
+                    if(jid == $ionicUser.info.username){
+                        _$('detail-status').innerHTML = '自己';
+                        return;
+                    }
+                    if($ionicUser.islogin){
                         $ionicUser.getConnection(jid)//等待连接
                     }else{
                         _$('detail-status').innerHTML = '在线';
                         _$('detail-btn').removeAttribute('disabled');
                     }
+                    $http.get('/xmpp/user/status/' + jid + '/xml').success(function(data){
+                        if(/(?:error|unavailable)/.test(data)){
+                            _$('detail-status').innerHTML = '不在线';
+                        }
+                    })
                     $http.get('/api/user/get/' + jid).success(function(data){//获取用户信息
                         $scope.info = data;
                     }).error(function(){
                     })
                     $scope.chat = function(){
-                        $ionicUser.canChat(jid,function(){
+                        $ionicUser.canChat($ionicUser.info.username,function(){
                             $state.go('tabs.chat',{jid:'@' + jid});
                         },function(){
                             $state.go('tabs.login');
@@ -430,8 +463,8 @@ app.config(function($stateProvider,$urlRouterProvider){
             'tab-home':{
                 templateUrl:'template/chat.html',
                 controller:function($scope,$stateParams,$ionicVideo,$ionicNavBarDelegate,$ionicXmpp){
-                    $scope.status = '正在建立连接(请点击允许访问您的摄像设备) ...'
                     webrtc = $ionicVideo.initRTC($stateParams);
+                    $ionicXmpp.busy = true;
                     $scope.back = function(){
                         $ionicVideo.cancelRTC(webrtc)
                     }
@@ -481,6 +514,10 @@ app.config(function($stateProvider,$urlRouterProvider){
                             facetalk.valid.login(form,$ionicTip);
                         }
                     }
+                    $scope.submit = function(event,form,user){
+                        var keyCode = event.keyCode || event.which;
+                        if(keyCode == 13) $scope.login(form,user);
+                    }
                 }
             },
         }
@@ -489,7 +526,7 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'history':{
                 templateUrl:'template/regist.html',
-                controller:function($scope,$ionicNavBarDelegate,$state,$ionicUser){
+                controller:function($scope,$ionicNavBarDelegate,$state,$ionicUser,$ionicTip){
                     $scope.showBack = true;
                     $scope.next = function(form,user){
                         if(form.$valid){
@@ -499,6 +536,10 @@ app.config(function($stateProvider,$urlRouterProvider){
                         }else{
                             facetalk.valid.regist(form,$ionicTip);
                         }
+                    }
+                    $scope.submit = function(event,form,user){
+                        var keyCode = event.keyCode || event.which;
+                        if(keyCode == 13) $scope.next(form,user);
                     }
                 }
             }
@@ -529,12 +570,12 @@ app.config(function($stateProvider,$urlRouterProvider){
                 templateUrl:'template/history.html',
                 controller:function($scope,$http,$ionicUser){
                     var info = $ionicUser.info;
-                    $http.get('/api/pay/getChatRecords/' + info.username + '/0/10').success(function(data){
+                    $http.get('/api/pay/getChatRecords/' + info.username + '/0/50').success(function(data){
                         for(var i = 0; i < data.length; i++){
-                            var d = data[i],name = d.partnerUserName,type = d.callType,date = new Date(d.beginTime);
+                            var d = data[i],name = d.partnerUserName,type = d.callType,date = d.beginTime;
                             data[i]['img'] = '/avatar/' + name + '.png';
                             data[i]['type'] = type == 'called' ? '呼入':'呼出';
-                            data[i]['date'] = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay();
+                            data[i]['date'] = date;
                         }
                         $scope.items = data;
                     }).error(function(){
@@ -549,7 +590,12 @@ app.config(function($stateProvider,$urlRouterProvider){
                 templateUrl:'template/detail.html',
                 controller:function($stateParams,$scope,$http,$state,$ionicTip,$ionicUser,$ionicXmpp){
                     var jid = ($scope.username = $stateParams.jid);
-                    $ionicUser.getConnection(jid)//等待连接
+                    if($ionicUser.islogin){
+                        $ionicUser.getConnection(jid)//等待连接
+                    }else{
+                        _$('detail-status').innerHTML = '在线';
+                        _$('detail-btn').removeAttribute('disabled');
+                    }
                     $http.get('/api/user/get/' + jid).success(function(data){//获取用户信息
                         $scope.info = data;
                     }).error(function(){
@@ -621,6 +667,10 @@ app.config(function($stateProvider,$urlRouterProvider){
                             facetalk.valid.login(form,$ionicTip);
                         }
                     }
+                    $scope.submit = function(event,form,user){
+                        var keyCode = event.keyCode || event.which;
+                        if(keyCode == 13) $scope.login(form,user);
+                    }
                 }
             },
         }
@@ -629,7 +679,7 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'setting':{
                 templateUrl:'template/regist.html',
-                controller:function($scope,$ionicNavBarDelegate,$state,$ionicUser){
+                controller:function($scope,$ionicNavBarDelegate,$state,$ionicUser,$ionicTip){
                     $scope.showBack = true;
                     $scope.next = function(form,user){
                         if(form.$valid){
@@ -639,6 +689,10 @@ app.config(function($stateProvider,$urlRouterProvider){
                         }else{
                             facetalk.valid.regist(form,$ionicTip);
                         }
+                    }
+                    $scope.submit = function(event,form,user){
+                        var keyCode = event.keyCode || event.which;
+                        if(keyCode == 13) $scope.next(form,user);
                     }
                 }
             }
@@ -672,7 +726,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                     info.img = '/avatar/' + info.username + '.png?' + new Date().getTime();
                     $scope.info = info;
                     $http.get('/api/pay/getCount/rose/' + info.username).success(function(data){
-                        $scope.count = data.count;
+                        $scope.info.count = data.productAmount;
                     })
                     $scope.logout = function(){
                         Storage.cookie.remove('_fh_username');
@@ -757,7 +811,9 @@ var facetalk = {
         var buttons = angular.element(obj).parent().next().children();
         buttons.eq(1).triggerHandler('click');
     },
-    chat:function(){
+    isPC:function(){
+        var useragent = navigator.userAgent;
+        return !(/(?:mobile|android|iphone)/i.test(useragent));
     },
     valid:{
         msgs:{
