@@ -1,6 +1,7 @@
 package com.facehu.web.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by wadang on 14-7-15.
@@ -9,7 +10,22 @@ import java.text.SimpleDateFormat;
 public class CtlHelp {
 
 
-    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+    public static String dateFormat(Date date) {
+
+        try {
+            return dateFormat.format(date);
+
+        } catch (Exception e) {
+
+        }
+
+        return null;
+
+    }
+
 
     /**
      * 邮箱验证

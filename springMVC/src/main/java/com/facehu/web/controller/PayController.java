@@ -214,8 +214,8 @@ public class PayController {
             for (ChatRecord chatRecord : listChatRecord) {
 
                 CtlHelp.ChatRecordsResult result = new CtlHelp.ChatRecordsResult();
-                result.setFinish_time(CtlHelp.dateFormat.format(chatRecord.getFinish_time()));
-                result.setBeginTime(CtlHelp.dateFormat.format(chatRecord.getBeginTime()));
+                result.setFinish_time(CtlHelp.dateFormat(chatRecord.getFinish_time()));
+                result.setBeginTime(CtlHelp.dateFormat(chatRecord.getBeginTime()));
                 result.setSpendProductAmount(chatRecord.getSpendProductAmount());
                 result.setSpendProductName(chatRecord.getSpendProductName());
 
