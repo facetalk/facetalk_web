@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 public class CtlHelp {
 
 
-    public static SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 邮箱验证
