@@ -7,7 +7,7 @@
                     <input type="email" name="loginEmail" placeholder="邮箱" required ng-model="user.loginEmail"/>
                 </label>
                 <label class="item item-input">
-                    <input type="password" name="loginPassword" placeholder="密码" required ng-model="user.loginPassword"/>
+                    <input ng-keypress="submit($event,loginForm,user)" type="password" name="loginPassword" placeholder="密码" required ng-model="user.loginPassword"/>
                 </label>
             </form>
         </div>

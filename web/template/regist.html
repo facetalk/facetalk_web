@@ -14,7 +14,7 @@
                 </label>
                 <label class="item item-input">
                     <span class="input-label">密码:</span>
-                    <input type="password" name="password" placeholder="密码" ng-model="user.password" required/>
+                    <input ng-keypress="submit($event,registForm,user)" type="password" name="password" placeholder="密码" ng-model="user.password" required/>
                 </label>
             </form>
         </div>

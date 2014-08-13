@@ -5,7 +5,7 @@
     <ion-content>
         <div class="chat">
             <div class="remote">
-                <div id="status-info">{{status}}</div>
+                <div id="status-info">正在建立连接<span>(请点击允许访问您的摄像设备<i ng-if="isPC" class="icon ion-arrow-up-c assertive"></i>&nbsp;&nbsp;)</span> ...</div>
                 <div id="remote"></div>
             </div>
             <div class="local"><video id="local"></video></div>
