@@ -610,7 +610,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                     $http.get('/api/pay/getChatRecords/' + info.username + '/0/50').success(function(data){
                         for(var i = 0; i < data.length; i++){
                             var d = data[i],name = d.partnerUserName,type = d.callType,date = d.beginTime;
-                            data[i]['img'] = '/avatar/' + name + '.png';
+                            data[i]['img'] = '/avatar/' + name + '.40.png';
                             data[i]['type'] = type == 'called' ? '呼入':'呼出';
                             data[i]['date'] = date;
                         }
