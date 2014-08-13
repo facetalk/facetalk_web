@@ -21,6 +21,9 @@ width:100%;
 .ion-flex img{width:100px;}
 .ion-circle{position:absolute;right:0;top:0;display:block;width:10px;height:10px;border-radius:5px;}
 
+/*History*/
+#history img{width:80px;height:auto;border-radius:0;max-height:130px;}
+
 /*登录页*/
 .login .row{width:80%;margin:0 auto;text-align:center;}
 
@@ -29,9 +32,10 @@ width:100%;
 .photos .step p{margin-top:30px;font-size:17px;}
 
 /*拍照页*/
-.take{margin:0 auto;}
-.take .video{margin:10px auto;padding:0;height:260px;overflow:hidden;border:solid 1px #666;}
-.take video{height:260px;}
+.take{margin:0 auto;text-align:center;}
+.take .tip{font-size:16px;font-weight:bold;margin:10px auto;color:#999}
+.take .video{background:#333;}
+.take video{height:260px;width:auto;}
 .take .buttons{text-align:center;}
 .take .shoot{background:url(../images/icons/icons.png) left top;height:73px;width:75px;display:block;margin:0 auto;}
 .take .confirm{background:url(../images/icons/icons.png) left -74px;height:33px;width:45px;display:block;margin:0 auto;}
@@ -40,13 +44,16 @@ width:100%;
 .detail{}
 .detail .price,.detail .status{color:green;}
 .detail .pic{text-align:center;}
-.detail .item-image img{width:250px;}
+.detail .item-image img{width:200px;}
 
 .chat{text-align:center;width:100%;height:100%;background:#666;color:#fff}
-.local{position:absolute;right:0;bottom:0;width:30%;z-index:2000;background:#666;}
-.chat video{width:100%;height:auto;background:#666}
+.local{position:absolute;right:0;bottom:0;z-index:2000;background:#666;}
+#local{height:130px;background:#666;border:solid 1px #666}
 #remote{width:100%;height:100%;text-align:center;}
-#remote video{position:absolute;height:100%;width:auto;z-index:1999;margin:0;padding:0;left:0;top:0}
+#remote video{height:100%;}
+@media screen and (min-width:600px) {
+    #local{height:260px;background:#666;border:solid 1px #666}
+}
 #status-info{position:absolute;top:35%;width:100%;}
 .request img{width:100%;border:solid 1px #666}
 

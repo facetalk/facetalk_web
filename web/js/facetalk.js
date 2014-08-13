@@ -197,14 +197,13 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
             choose.className = 'row';
         },
         choose:function(callback){
-            var video = document.getElementById('face'),canvas = document.createElement('canvas'),name = $ionicUser.info.username,self = this;
-            var w = video.offsetWidth,h = video.offsetHeight;
-            canvas.width = w;
-            canvas.height = h;
-            var ctx = canvas.getContext('2d'),para;
-            ctx.drawImage(video,0,0,w,h);
+            var video = document.getElementById('face'),w = video.offsetWidth,h = video.offsetHeight,name = $ionicUser.info.username,self = this;
+            var canvas = document.createElement('canvas'),ctx = canvas.getContext('2d');
+            canvas.width = 200;
+            canvas.height = 260;
+            ctx.drawImage(video,-(w-200)/2,0,w,h);
 
-            para = 'username=' + name + '&picData=' + encodeURIComponent(canvas.toDataURL());
+            var para = 'username=' + name + '&picData=' + encodeURIComponent(canvas.toDataURL());
             $http.post('/api/user/savePic',para).success(function(data){
                 var status = data.status;
                 if(status == 'success'){
@@ -258,10 +257,12 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
                         }).error(function(){
                         })
                     }
+                    _$('status-info').style.cssText = 'display:none';
                 }) 
                 webrtc.on('videoRemoved',function(){
                     //离开
                     _$('status-info').innerHTML = '对方终止了聊天 ...'
+                    _$('status-info').style.cssText = '';
                     if(vid){//记录结束时间，并结算
                         $http.get('/api/pay/chatRecord/end/' + vid);
                         $http.get('/api/pay/chatTransaction/' + vid);
@@ -878,9 +879,9 @@ var facetalk = {
             emailRequired:'邮箱地址不能为空',
             email:'请输入正确的邮箱地址',
             pwdRequired:'请输入密码',
-            pwd:'',
+            pwd:'格式错误:请输入6~16位字符,区分大小写',
             nameRequired:'用户名不能为空',
-            name:'请输入正确的用户名'
+            name:'格式错误:请输入2~18位汉字或英文字符'
         },
         login:function(form,$ionicTip){
             var email = form.loginEmail,pwd = form.loginPassword,msgs = facetalk.valid.msgs,msg;
@@ -906,9 +907,19 @@ var facetalk = {
                     msg = msgs.email;
                 }
             }else if(name.$invalid){
-                msg = msgs.name;
+                var errors = name.$error;
+                if(errors.required){
+                    msg = msgs.nameRequired;
+                }else{
+                    msg = msgs.name;
+                }
             }else if(pwd.$invalid){
-                msg = msgs.pwdRequired;
+                var errors = pwd.$error;
+                if(errors.required){
+                    msg = msgs.pwdRequired;
+                }else{
+                    msg = msgs.pwd;
+                }
             }
             $ionicTip.show(msg)
         }
