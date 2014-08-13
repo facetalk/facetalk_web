@@ -120,11 +120,10 @@ public class UserController {
 
             writePicToFile(picData.substring(22), fileName);
             //裁剪图片
-            String fileName80 = avaterPath + File.separator + username + ".80.png";
-
-            String convertCil = "convert -resize 80X80 " + fileName + " " + fileName80;
-            linuxCommand(convertCil);
-
+            String fileName40 = avaterPath + File.separator + username + ".40.png";
+            String fileName100 = avaterPath + File.separator + username + ".100.png";
+            linuxCommand("convert -resize 40X52 " + fileName + " " + fileName40);
+            linuxCommand("convert -resize 100X130 " + fileName + " " + fileName100);
 
             User user = userDao.getUserByName(username);
             user.setInfoCompleteness(1); // 1完成照片这一步 0完成基本信息
