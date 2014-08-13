@@ -11,9 +11,14 @@ img{vertical-align:middle}
 
 
 /*Home在线列表*/
-.ion-flex{display:-webkit-box;display:-moz-box;width:100%;margin:0 auto;text-align:center;flex-wrap:wrap;-webkit-box-pack:center;-moz-box-pack:center;}
-.ion-flex a{display:block;margin:5px 0;width:33%;text-align:center;}
-.ion-flex img{min-width:100px;max-width:150px;width:98%;border:solid 1px #333;}
+a.home-tip{display:block;font-size:16px;margin:10px auto;text-align:center;font-weight:bold;text-decoration:none;color:#999}
+.ion-flex{
+display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;
+-webkit-box-lines:multiple;-moz-box-lines:multiple;ms-flex-wrap:wrap;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+width:100%;
+}
+.ion-flex a{display:block;width:25%;border:solid 1px #fff;max-width:100px;height:130px;overflow:hidden;text-align:center;}
+.ion-flex img{width:100px;}
 .ion-circle{position:absolute;right:0;top:0;display:block;width:10px;height:10px;border-radius:5px;}
 
 /*登录页*/
@@ -25,8 +30,8 @@ img{vertical-align:middle}
 
 /*拍照页*/
 .take{margin:0 auto;}
-.take .video{margin:10px auto;padding:0;width:300px;height:300px;overflow:hidden;border:solid 1px #666;}
-.take video{width:300px;height:300px;}
+.take .video{margin:10px auto;padding:0;height:260px;overflow:hidden;border:solid 1px #666;}
+.take video{height:260px;}
 .take .buttons{text-align:center;}
 .take .shoot{background:url(../images/icons/icons.png) left top;height:73px;width:75px;display:block;margin:0 auto;}
 .take .confirm{background:url(../images/icons/icons.png) left -74px;height:33px;width:45px;display:block;margin:0 auto;}
@@ -38,8 +43,10 @@ img{vertical-align:middle}
 .detail .item-image img{width:250px;}
 
 .chat{text-align:center;width:100%;height:100%;background:#666;color:#fff}
-.chat video{position:absolute;right:5px;bottom:5px;height:100px;z-index:2000}
-#remote video{position:absolute;height:100%;z-index:1999;margin:0;padding:0;left:0;top:0}
+.local{position:absolute;right:0;bottom:0;width:30%;z-index:2000;background:#666;}
+.chat video{width:100%;height:auto;background:#666}
+#remote{width:100%;height:100%;text-align:center;}
+#remote video{position:absolute;height:100%;width:auto;z-index:1999;margin:0;padding:0;left:0;top:0}
 #status-info{position:absolute;top:35%;width:100%;}
 .request img{width:100%;border:solid 1px #666}
 

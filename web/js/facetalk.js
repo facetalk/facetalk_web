@@ -38,19 +38,22 @@ app.factory('$ionicUser',function($http,$ionicTip,$ionicXmpp){
                 if(callback && typeof callback == 'function') callback();
             })
         },
-        getConnection:function(jid,i){
-            var connected = $ionicXmpp.connected,i = i || 0,self = this;
-            if(connected){
-                $ionicXmpp.connection.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t('status'));
-            }else{
-                if(i == 10){
-                    $ionicTip.show('连接超时,请稍后重试');
-                }else{
-                    setTimeout(function(){
-                        self.getConnection(jid,++i)
-                    },500);
-                }
-            }
+        status:function(jid){
+            $http.get('/xmpp/user/status/' + jid + '@facetalk/xml').success(function(data){
+                try{//可能在非detail页调用这个接口判断用户状态,这时页面没有status，btn
+                    var status = _$('detail-status'),btn = _$('detail-btn');
+                    if(/chat/.test(data)){
+                        $ionicXmpp.busy = false;
+                        status.innerHTML = '空闲';
+                        btn.removeAttribute('disabled');
+                    }else if(/dnd/.test(data)){
+                        $ionicXmpp.busy = true;
+                        status.innerHTML = '繁忙';
+                    }else if(/(?:error|unavailable)/.test(data)){
+                        status.innerHTML = '不在线';
+                    }
+                }catch(e){}
+            })
         },
         canChat:function(jid,login,unlogin){
             if(this.islogin){
@@ -94,7 +97,7 @@ app.factory('$ionicUser',function($http,$ionicTip,$ionicXmpp){
     }
 })
 //XMPP信息
-app.factory('$ionicXmpp',function($http,$state,$ionicPopup,$ionicNavBarDelegate,$timeout){
+app.factory('$ionicXmpp',function($http,$state,$ionicPopup,$ionicNavBarDelegate,$timeout,$ionicTip,$ionicLoading){
     return {
         server:'http://42.62.73.61/http-bind',
         xmpp:null,
@@ -116,7 +119,7 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup,$ionicNavBarDelegate,
             if(status == Strophe.Status.ATTACHED){//登录xmpp成功
                 var self = this,con = self.connection;
                 self.connected = true;
-                con.send($pres());
+                con.send($pres().c('show').t('chat'));//空闲
                 con.addHandler(function(message){
                     self.message.call(self,message)
                     return true;
@@ -126,57 +129,58 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup,$ionicNavBarDelegate,
         },
         message:function(message){
             console.log(message);
-            var con = this.connection,from = message.getAttribute('from'),f_jid = from.split('@')[0],signal = message.childNodes[0].innerHTML,status = document.getElementById('detail-status'),btn = document.getElementById('detail-btn'),self = this;
+            var con = this.connection,from = message.getAttribute('from'),f_jid = from.split('@')[0],signal = message.childNodes[0].innerHTML,self = this;
             var msg = $msg({type:'chat',to:from}).c('body');
 
-            if(signal == 'status'){//握手状态
-                if(this.busy) con.send(msg.t('busy'));
-                else con.send(msg.t('free'));
-            }else if(signal == 'busy'){
-                status.innerHTML = '繁忙'
-                btn.setAttribute('disabled','disabled');
-            }else if(signal == 'free'){
-                status.innerHTML = '空闲'
-                btn.removeAttribute('disabled');
-            }
+            $ionicLoading.hide();
             if(signal == 'video'){//请求视频
-                this.busy = true;
+                var nick = message.getAttribute('nick');
+                //当两个人同时进入某一MM详细页，此时MM是空闲状态，如果A向MM发起视频切MM同意，之后B若向MM发起视频则此时MM处于繁忙状态，需要直接拒绝
+                if(self.busy){
+                    $ionicTip.show('对方繁忙，请稍后再试 ...');
+                    return;
+                }
                 $ionicPopup.confirm({
                     title:'提示信息',
-                    template:'<div class="row request"><div class="col col-33 col-center"><img src="/avatar/' + f_jid + '.png"/></div><div class="col col-67">' + f_jid + '请求和您进行视频聊天，是否同意</div></div>',
+                    template:'<div class="row request"><div class="col col-33 col-center"><img src="/avatar/' + f_jid + '.png"/></div><div class="col col-67"><strong>' + nick + '</strong> 请求和您进行视频聊天，是否同意</div></div>',
                     okText:'同意',
                     cancelText:'拒绝'
                 }).then(function(res){
                     if(res){
-                        con.send(msg.t('ok'))
-                        location.hash = '/tab/chat/' + from.split('@')[0];
+                        var roomid = f_jid + '_' + self.xmpp.jid.split('@')[0];
+                        con.send(msg.t('ok'));
+
+                        con.send($pres().c('show').t('dnd'));
+                        self.busy = true;
+
+                        $state.go('tabs.chat',{roomid:roomid})
                     }else{
                         self.busy = false;
                         con.send(msg.t('no'))
                     }
                 })
             }else if(signal == 'ok'){
-                _$('status-info').innerHTML = '对方同意了您的视频请求,正在建立连接 ...'
+                var roomid = self.xmpp.jid.split('@')[0] + '_' + f_jid;
+                con.send($pres().c('show').t('dnd'));
+                self.busy = true;
+
+                /history/.test(location.hash) ? $state.go('tabs.history.chat',{roomid:roomid}) : $state.go('tabs.chat',{roomid:roomid})
             }else if(signal == 'no'){
-                _$('status-info').innerHTML = '对方拒绝您的视频请求 ...'
-                //离开
-                $timeout(function(){
-                    var webrtc = self.webrtc;
-                    webrtc.stopLocalVideo();
-                    webrtc.leaveRoom();
-                    self.busy = false;
-                    $ionicNavBarDelegate.back();
-                },2000)
+                $ionicTip.show('对方拒绝了您的请求');
+            }else{
+                if(signal == 'PermissionDeniedError'){//对方关闭了摄像头
+                    _$('status-info').innerHTML = '对方拒绝开启摄像装备，将无法和对方建立连接，请返回 ...'
+                }
             }
         }
     }
 })
 //Video
 app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ionicUser,$ionicXmpp,$ionicTip,$timeout){
-    var self = this;
     return {
         stream:null,
         loadVideo:function(){
+            var self = this;
             navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
             navigator.getUserMedia({video:true,audio:false}, function(stream){
                 var video = document.getElementById("face");
@@ -186,18 +190,19 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
             },function(error){});
         },
         take:function(){
-            var videoStream = self.stream,video = document.getElementById('face'),take = document.getElementById('take'),choose = document.getElementById('choose');
+            var videoStream = this.stream,video = document.getElementById('face'),take = document.getElementById('take'),choose = document.getElementById('choose');
             if(!videoStream) return;
             video.pause();
             take.className = 'hidden';
             choose.className = 'row';
         },
         choose:function(callback){
-            var video = document.getElementById('face'),canvas = document.createElement('canvas'),name = $ionicUser.info.username;
-            canvas.width = '300';
-            canvas.height = '300';
+            var video = document.getElementById('face'),canvas = document.createElement('canvas'),name = $ionicUser.info.username,self = this;
+            var w = video.offsetWidth,h = video.offsetHeight;
+            canvas.width = w;
+            canvas.height = h;
             var ctx = canvas.getContext('2d'),para;
-            ctx.drawImage(video,0,0,300,300);
+            ctx.drawImage(video,0,0,w,h);
 
             para = 'username=' + name + '&picData=' + encodeURIComponent(canvas.toDataURL());
             $http.post('/api/user/savePic',para).success(function(data){
@@ -206,7 +211,7 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
                     self.stream.stop();
                     $ionicLoading.show({template:'您的头像已上传成功,即将返回上一页'});
                     $ionicUser.complete = true;
-                    $ionicXmpp.bind.call($ionicXmpp,name);
+                    if(!$ionicXmpp.connection) $ionicXmpp.bind.call($ionicXmpp,name);
                     //2秒后返回
                     $timeout(function(){
                         $ionicLoading.hide();
@@ -229,62 +234,63 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
             video.play();
         },
         initRTC:function(opts){
-            var jid = opts.jid,roomid,isCaller = false,vid,self = this;
+            var roomid = opts.roomid,vid,self = this;
             var con = $ionicXmpp.connection,m_jid = $ionicUser.info.username;
-            if(!con || !jid){
-                $ionicTip.show('连接失败,请退出重试')
-                return;
+            var webrtc = $ionicXmpp.webrtc;
+
+            if(!webrtc){
+                webrtc = ($ionicXmpp.webrtc =  new SimpleWebRTC({
+                    url:'http://42.62.73.27:8888',
+                    localVideoEl:'local',
+                    remoteVideosEl:'remote',
+                    //debug:true,
+                    autoRequestMedia:true
+                }));
+
+                webrtc.on('readyToCall', function () {
+                    webrtc.joinRoom(roomid);
+                });
+                webrtc.on('videoAdded',function(){
+                    //假设有视频发起者记录聊天时间
+                    if(roomid.indexOf(m_jid) == 0){
+                        $http.get('/api/pay/chatRecord/begin/' + roomid.replace('_','/')).success(function(data){
+                            vid = data.id;
+                        }).error(function(){
+                        })
+                    }
+                }) 
+                webrtc.on('videoRemoved',function(){
+                    //离开
+                    _$('status-info').innerHTML = '对方终止了聊天 ...'
+                    if(vid){//记录结束时间，并结算
+                        $http.get('/api/pay/chatRecord/end/' + vid);
+                        $http.get('/api/pay/chatTransaction/' + vid);
+                    }
+                    
+                    con.send($pres().c('show').t('chat'));
+                    $ionicXmpp.busy = false;
+                })
+                webrtc.on('localMediaError',function(err){
+                    var name = err.name,jid = roomid.replace(m_jid,'').replace('_','');
+                    con.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t(name));
+                    if(name == 'PermissionDeniedError'){
+                        _$('status-info').innerHTML = '由于您没有开启摄像装置，将无法与对方进行聊天 ...'
+                    }
+
+                    con.send($pres().c('show').t('chat'));
+                    $ionicXmpp.busy = false;
+                })
+            }else{
+                webrtc.startLocalVideo();
             }
             
 
-            if(jid.charAt(0) == '@'){//请求某人
-                isCaller = true;
-                jid = jid.substring(1);
-                con.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t('video'));
-                roomid = m_jid + '_' + jid;
-            }else{//同意请求
-                roomid = jid + '_' + m_jid;
-            }
-
-            var webrtc = ($ionicXmpp.webrtc =  new SimpleWebRTC({
-                url:'http://42.62.73.27:8888',
-                localVideoEl:'local',
-                remoteVideosEl:'remote',
-                autoRequestMedia:true
-            }));
-            webrtc.on('readyToCall', function () {
-                webrtc.joinRoom(roomid);
-            });
-            webrtc.on('videoAdded',function(){
-                if(!isCaller) return;
-                //记录聊天开始
-                $http.get('/api/pay/chatRecord/begin/' + roomid.replace('_','/')).success(function(data){
-                    vid = data.id;
-                }).error(function(){
-                })
-            }) 
-            webrtc.on('videoRemoved',function(){
-                //离开
-                _$('status-info').innerHTML = '对方终止了聊天，页面即将返回上一页 ...'
-                if(vid){//记录结束时间，并结算
-                    $http.get('/api/pay/chatRecord/end/' + vid);
-                    $http.get('/api/pay/chatTransaction/' + vid);
-                }
-                $timeout(function(){
-                    self.cancelRTC(webrtc);
-                },2000)
-            })
-            webrtc.on('error', function (peer) {
-                // remote ice failure
-                alert(1)
-            })
-
             return webrtc;
         },
-        cancelRTC:function(webrtc){
+        cancelRTC:function(){
+            var webrtc = $ionicXmpp.webrtc;
             webrtc.stopLocalVideo();
             webrtc.leaveRoom();
-            $ionicXmpp.busy = false;
             $ionicNavBarDelegate.back();
         }
     }
@@ -312,6 +318,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                 $ionicNavBarDelegate.back();
             }
             $scope.isPC = facetalk.isPC();
+            $scope.supportVideo = facetalk.supportVideo();
         }
     })
     
@@ -321,17 +328,35 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'tab-home':{
                 templateUrl:'template/home.html',
-                controller:function($scope,$http,$ionicUser){
-                    var info = $ionicUser.info;
-                    $http.get('/xmpp/get/allonline').success(function(data){
-                        if(/\s*null\s*/.test(data)) return;
-                        var arr = data.split(','),items = [];
-                        for(var i = 0; i < arr.length; i++){
-                            var jid = arr[i],username = jid.split('@')[0];
-                            items.push({jid:jid,username:username})
+                controller:function($scope,$http,$ionicUser,$ionicLoading){
+                    var info = $ionicUser.info,islogin = $ionicUser.islogin;
+                    
+                    //未登录显示推广头像
+                    if(islogin){
+                        $http.get('/xmpp/get/allonline').success(function(data){
+                            if(/\s*null\s*/.test(data)) return;
+                            var arr = data.split(','),items = [];
+                            for(var i = 0; i < arr.length; i++){
+                                var jid = arr[i],username = jid.split('@')[0];
+                                items.push({jid:jid,username:username})
+                            }
+                            $scope.items = items;
+                        })
+                    }else{
+                        $scope.items = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
+                    }
+
+                    if(!facetalk.supportVideo()){
+                        var msg = '';
+                        if(facetalk.isMac()){
+                            msg = '目前脸呼暂不支持IOS系统';
+                        }else{
+                            msg = '目前脸呼仅支持Chrome或火狐浏览器';
                         }
-                        $scope.items = items;
-                    })
+                        $ionicLoading.show({template:msg})
+                    }
+
+                    $scope.islogin = islogin;
                     $scope.hasLogin = function(){
                         if($ionicUser.complete){
                             return false;
@@ -409,17 +434,25 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'tab-home':{
                 templateUrl:'template/take.html',
-                controller:function($scope,$state,$ionicUser,$ionicVideo){
+                controller:function($scope,$state,$ionicUser,$ionicVideo,$ionicNavBarDelegate){
                     var name = $ionicUser.info.username;
                     if(!name) $state.go('tabs.login');
-                    $scope.taking = $ionicVideo.take;
+
+                    if($ionicNavBarDelegate.getPreviousTitle()) $scope.showBack = true;
+                    else $scope.showBack = false;
+
+                    $scope.taking = function(){$ionicVideo.take.call($ionicVideo)};
                     $scope.choose = function(){
-                        $ionicVideo.choose(function(){
+                        $ionicVideo.choose.call($ionicVideo,function(){
                             $state.go('tabs.home');
                         })
                     }
                     $scope.reset = $ionicVideo.reset;
-                    $ionicVideo.loadVideo();//开启视频
+                    $scope.back = function(){
+                        $ionicVideo.stream.stop();
+                        $ionicNavBarDelegate.back();
+                    }
+                    $ionicVideo.loadVideo.call($ionicVideo);//开启视频
                 }
             }
         }
@@ -428,30 +461,21 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'tab-home':{
                 templateUrl:'template/detail.html',
-                controller:function($stateParams,$scope,$http,$state,$ionicUser){
+                controller:function($stateParams,$scope,$http,$state,$ionicUser,$ionicXmpp,$ionicLoading){
                     var jid = ($scope.username = $stateParams.jid);
                     if(jid == $ionicUser.info.username){
                         _$('detail-status').innerHTML = '自己';
                         return;
                     }
-                    if($ionicUser.islogin){
-                        $ionicUser.getConnection(jid)//等待连接
-                    }else{
-                        _$('detail-status').innerHTML = '在线';
-                        _$('detail-btn').removeAttribute('disabled');
-                    }
-                    $http.get('/xmpp/user/status/' + jid + '@facetalk/xml').success(function(data){
-                        if(/(?:error|unavailable)/.test(data)){
-                            _$('detail-status').innerHTML = '不在线';
-                        }
-                    })
+                    $ionicUser.status(jid);
                     $http.get('/api/user/get/' + jid).success(function(data){//获取用户信息
                         $scope.info = data;
                     }).error(function(){
                     })
                     $scope.chat = function(){
                         $ionicUser.canChat($ionicUser.info.username,function(){
-                            $state.go('tabs.chat',{jid:'@' + jid});
+                            $ionicXmpp.connection.send($msg({type:'chat',to:jid + '@facetalk',nick:$ionicUser.info.name}).c('body').t('video'));
+                            $ionicLoading.show({template:'正在发送视频请求，请稍后 ...'});
                         },function(){
                             $state.go('tabs.login');
                         })
@@ -460,15 +484,17 @@ app.config(function($stateProvider,$urlRouterProvider){
             }
         }
     }).state('tabs.chat',{
-        url:'/chat/:jid',
+        url:'/chat/:roomid',
         views:{
             'tab-home':{
                 templateUrl:'template/chat.html',
                 controller:function($scope,$stateParams,$ionicVideo,$ionicNavBarDelegate,$ionicXmpp){
-                    webrtc = $ionicVideo.initRTC($stateParams);
-                    $ionicXmpp.busy = true;
+                    $ionicVideo.initRTC($stateParams);
                     $scope.back = function(){
-                        $ionicVideo.cancelRTC(webrtc)
+                        $ionicXmpp.connection.send($pres().c('show').t('chat'));
+                        $ionicXmpp.busy = false;
+
+                        $ionicVideo.cancelRTC();
                     }
                 }
             }
@@ -551,17 +577,25 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'history':{
                 templateUrl:'template/take.html',
-                controller:function($scope,$state,$ionicUser,$ionicVideo){
+                controller:function($scope,$state,$ionicUser,$ionicVideo,$ionicNavBarDelegate){
                     var name = $ionicUser.info.username;
                     if(!name) $state.go('tabs.history.login');
-                    $scope.taking = $ionicVideo.take;
+
+                    if($ionicNavBarDelegate.getPreviousTitle()) $scope.showBack = true;
+                    else $scope.showBack = false;
+
+                    $scope.taking = function(){$ionicVideo.take.call($ionicVideo)};
                     $scope.choose = function(){
-                        $ionicVideo.choose(function(){
+                        $ionicVideo.choose.call($ionicVideo,function(){
                             $state.go('tabs.history.main');
                         })
                     }
                     $scope.reset = $ionicVideo.reset;
-                    $ionicVideo.loadVideo();//开启视频
+                    $scope.back = function(){
+                        $ionicVideo.stream.stop();
+                        $ionicNavBarDelegate.back();
+                    }
+                    $ionicVideo.loadVideo.call($ionicVideo);//开启视频
                 }
             }
         }
@@ -592,36 +626,37 @@ app.config(function($stateProvider,$urlRouterProvider){
                 templateUrl:'template/detail.html',
                 controller:function($stateParams,$scope,$http,$state,$ionicTip,$ionicUser,$ionicXmpp){
                     var jid = ($scope.username = $stateParams.jid);
-                    if($ionicUser.islogin){
-                        $ionicUser.getConnection(jid)//等待连接
-                    }else{
-                        _$('detail-status').innerHTML = '在线';
-                        _$('detail-btn').removeAttribute('disabled');
+                    if(jid == $ionicUser.info.username){
+                        _$('detail-status').innerHTML = '自己';
+                        return;
                     }
+                    $ionicUser.status(jid);
                     $http.get('/api/user/get/' + jid).success(function(data){//获取用户信息
                         $scope.info = data;
                     }).error(function(){
                     })
                     $scope.chat = function(){
-                        $ionicUser.canChat(jid,function(){
-                            $state.go('tabs.history.chat',{jid:'@' + jid});
+                        $ionicUser.canChat($ionicUser.info.username,function(){
+                            $ionicXmpp.connection.send($msg({type:'chat',to:jid + '@facetalk',nick:$ionicUser.info.name}).c('body').t('video'));
                         },function(){
-                            $state.go('tabs.history.login');
+                            $state.go('tabs.login');
                         })
                     }
                 }
             }
         }
     }).state('tabs.history.chat',{
-        url:'/chat/:jid',
+        url:'/chat/:roomid',
         views:{
             'history':{
                 templateUrl:'template/chat.html',
                 controller:function($scope,$stateParams,$ionicVideo,$ionicNavBarDelegate,$ionicXmpp){
-                    $scope.status = '正在建立连接(请点击允许访问您的摄像设备) ...'
-                    webrtc = $ionicVideo.initRTC($stateParams);
+                    $ionicVideo.initRTC($stateParams);
                     $scope.back = function(){
-                        $ionicVideo.cancelRTC(webrtc)
+                        $ionicXmpp.connection.send($pres().c('show').t('chat'));
+                        $ionicXmpp.busy = false;
+
+                        $ionicVideo.cancelRTC();
                     }
                 }
             }
@@ -704,17 +739,25 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'setting':{
                 templateUrl:'template/take.html',
-                controller:function($scope,$state,$ionicUser,$ionicVideo){
+                controller:function($scope,$state,$ionicUser,$ionicVideo,$ionicNavBarDelegate){
                     var name = $ionicUser.info.username;
                     if(!name) $state.go('tabs.setting.login');
-                    $scope.taking = $ionicVideo.take;
+
+                    if($ionicNavBarDelegate.getPreviousTitle()) $scope.showBack = true;
+                    else $scope.showBack = false;
+
+                    $scope.taking = function(){$ionicVideo.take.call($ionicVideo)};
                     $scope.choose = function(){
-                        $ionicVideo.choose(function(){
+                        $ionicVideo.choose.call($ionicVideo,function(){
                             $state.go('tabs.setting.main');
                         })
                     }
                     $scope.reset = $ionicVideo.reset;
-                    $ionicVideo.loadVideo();//开启视频
+                    $scope.back = function(){
+                        $ionicVideo.stream.stop();
+                        $ionicNavBarDelegate.back();
+                    }
+                    $ionicVideo.loadVideo.call($ionicVideo);//开启视频
                 }
             }
         }
@@ -820,9 +863,15 @@ var facetalk = {
         var buttons = angular.element(obj).parent().next().children();
         buttons.eq(1).triggerHandler('click');
     },
-    isPC:function(){
+    isPC:function(){//箭头提示
         var useragent = navigator.userAgent;
         return !(/(?:mobile|android|iphone)/i.test(useragent));
+    },
+    supportVideo:function(){
+        return navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    },
+    isMac:function(){
+        return /(?:iphone|ipad)/i.test(navigator.userAgent);
     },
     valid:{
         msgs:{
