@@ -12,11 +12,12 @@ app.config(function($httpProvider){
 //信息提示
 app.factory('$ionicTip',function($ionicLoading,$timeout){
     return {
-        show:function(msg){
+        show:function(msg,timeout){
+            var timeout = timeout || 2000;
             $ionicLoading.show({template:msg,noBackdrop:true})
             $timeout(function(){
                 $ionicLoading.hide();
-            },1500)
+            },timeout)
         }
     }
 })
@@ -183,7 +184,7 @@ app.factory('$ionicXmpp',function($rootScope,$http,$state,$ionicPopup,$ionicNavB
                 $ionicTip.show('对方拒绝了您的请求');
             }else{
                 if(signal == 'PermissionDeniedError'){//对方关闭了摄像头
-                    _$('status-info').innerHTML = '对方拒绝开启摄像装备，将无法和对方建立连接，请返回 ...'
+                    $ionicTip.show('对方拒绝开启摄像装备，将无法和对方建立连接，请返回 ...',5000);
                 }
             }
         }
@@ -271,12 +272,10 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
                         }).error(function(){
                         })
                     }
-                    _$('status-info').style.cssText = 'display:none';
                 }) 
                 webrtc.on('videoRemoved',function(){
                     //离开
-                    _$('status-info').innerHTML = '对方终止了聊天 ...'
-                    _$('status-info').style.cssText = '';
+                    $ionicTip.show('对方终止了聊天,请返回 ...',5000)
                     if(vid){//记录结束时间，并结算
                         $http.get('/api/pay/chatRecord/end/' + vid);
                         $http.get('/api/pay/chatTransaction/' + vid);
@@ -289,7 +288,7 @@ app.factory('$ionicVideo',function($http,$ionicNavBarDelegate,$ionicLoading,$ion
                     var name = err.name,jid = roomid.replace(m_jid,'').replace('_','');
                     con.send($msg({type:'chat',to:jid + '@facetalk'}).c('body').t(name));
                     if(name == 'PermissionDeniedError'){
-                        _$('status-info').innerHTML = '由于您没有开启摄像装置，将无法与对方进行聊天 ...'
+                        $ionicTip.show('由于您没有开启摄像装置，将无法与对方进行聊天 ...',5000)
                     }
 
                     con.send($pres().c('show').t('chat'));
@@ -360,10 +359,15 @@ app.config(function($stateProvider,$urlRouterProvider){
 
                     if(!facetalk.supportVideo()){
                         var msg = '';
-                        if(facetalk.isMac()){
+                        if(facetalk.isIOS()){
                             msg = '目前脸呼暂不支持IOS系统';
                         }else{
-                            msg = '目前脸呼仅支持Chrome或火狐浏览器';
+                            if(facetalk.isPC()){
+                                var link = facetalk.isMAC() ? 'http://rj.baidu.com/soft/detail/25718.html' : 'http://rj.baidu.com/soft/detail/14744.html';
+                                msg = '目前脸呼仅支持Firefox和Chrome浏览器,我们建议您使用最新版的Chrome浏览器,<a class="link" target="_blank" href="' + link + '">点击下载Chrome浏览器</a>';
+                            }else{
+                                msg = '目前脸呼仅支持Firefox和Chrome浏览器,我们建议您使用最新版的Chrome浏览器';
+                            }
                         }
                         $ionicLoading.show({template:msg})
                     }
@@ -500,8 +504,9 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'tab-home':{
                 templateUrl:'template/chat.html',
-                controller:function($scope,$stateParams,$ionicVideo,$ionicNavBarDelegate,$ionicXmpp){
+                controller:function($scope,$stateParams,$ionicVideo,$ionicXmpp,$ionicTip){
                     $ionicVideo.initRTC($stateParams);
+                    $ionicTip.show('正在建立连接,请点击允许访问您的摄像设备 ...',5000);
                     $scope.back = function(){
                         $ionicXmpp.connection.send($pres().c('show').t('chat'));
                         $ionicXmpp.busy = false;
@@ -653,16 +658,6 @@ app.config(function($stateProvider,$urlRouterProvider){
                         }).error(function(){
                         })
                     }
-                    /*$http.get('/api/pay/getChatRecords/' + info.username + '/0/10').success(function(data){
-                        for(var i = 0; i < data.length; i++){
-                            var d = data[i],name = d.partnerUserName,type = d.callType,date = d.beginTime;
-                            data[i]['img'] = '/avatar/' + name + '.40.png';
-                            data[i]['type'] = type == 'called' ? '呼入':'呼出';
-                            data[i]['date'] = date;
-                        }
-                        $scope.items = data;
-                    }).error(function(){
-                    })*/
                 }
             }
         }
@@ -697,8 +692,9 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'history':{
                 templateUrl:'template/chat.html',
-                controller:function($scope,$stateParams,$ionicVideo,$ionicNavBarDelegate,$ionicXmpp){
+                controller:function($scope,$stateParams,$ionicVideo,$ionicXmpp,$ionicTip){
                     $ionicVideo.initRTC($stateParams);
+                    $ionicTip.show('正在建立连接,请点击允许访问您的摄像设备 ...',5000);
                     $scope.back = function(){
                         $ionicXmpp.connection.send($pres().c('show').t('chat'));
                         $ionicXmpp.busy = false;
@@ -916,8 +912,11 @@ var facetalk = {
     supportVideo:function(){
         return navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
     },
-    isMac:function(){
+    isIOS:function(){
         return /(?:iphone|ipad)/i.test(navigator.userAgent);
+    },
+    isMAC:function(){
+        return /macintosh/i.test(navigator.userAgent);
     },
     valid:{
         msgs:{

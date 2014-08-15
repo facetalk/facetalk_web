@@ -1,5 +1,6 @@
 form.invalid input.ng-invalid{background-color:lightgoldenrodyellow;}
 .hidden{display:none}
+a.link,a.link:link,a.link:visited,a.link:hover,a.link:active{color:red}
 img{vertical-align:middle}
 
 .intro{height:80%;}
