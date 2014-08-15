@@ -97,12 +97,11 @@ app.factory('$ionicUser',function($http,$ionicTip,$ionicXmpp){
     }
 })
 //XMPP信息
-app.factory('$ionicXmpp',function($http,$state,$ionicPopup,$ionicNavBarDelegate,$timeout,$ionicTip,$ionicLoading){
+app.factory('$ionicXmpp',function($rootScope,$http,$state,$ionicPopup,$ionicNavBarDelegate,$timeout,$ionicTip,$ionicLoading){
     return {
         server:'http://42.62.73.61/http-bind',
         xmpp:null,
         connection:null,
-        connected:false,
         busy:false,
         bind:function(name){
             var self = this;
@@ -118,14 +117,29 @@ app.factory('$ionicXmpp',function($http,$state,$ionicPopup,$ionicNavBarDelegate,
         connecting:function(status){
             if(status == Strophe.Status.ATTACHED){//登录xmpp成功
                 var self = this,con = self.connection;
-                self.connected = true;
                 con.send($pres().c('show').t('chat'));//空闲
+
+                con.addHandler(self.online,null,'presence');
+
                 con.addHandler(function(message){
                     self.message.call(self,message)
                     return true;
                 },null,'message','chat');
+
             }else{
             }
+        },
+        online:function(){
+            $http.get('/xmpp/get/allonline').success(function(data){
+                if(/\s*null\s*/.test(data)) return;
+                var arr = data.split(','),items = [];
+                for(var i = 0; i < arr.length; i++){
+                    var jid = arr[i],username = jid.split('@')[0];
+                    items.push({jid:jid,username:username})
+                }
+                $rootScope.online = items;
+                return true;
+            })
         },
         message:function(message){
             console.log(message);
@@ -314,7 +328,14 @@ app.config(function($stateProvider,$urlRouterProvider){
                 if(name) return $ionicUser.getInfo(name);
             }
         },
-        controller:function($scope,$ionicNavBarDelegate){
+        controller:function($scope,$ionicNavBarDelegate,$ionicXmpp,$ionicTip){
+            $scope.select = function(hash){
+                if($ionicXmpp.busy){
+                    $ionicTip.show('您正在视频通话，暂不能切换菜单');
+                }else{
+                    location.hash = hash;
+                }
+            }
             $scope.back = function(){
                 $ionicNavBarDelegate.back();
             }
@@ -329,21 +350,11 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'tab-home':{
                 templateUrl:'template/home.html',
-                controller:function($scope,$http,$ionicUser,$ionicLoading){
+                controller:function($rootScope,$scope,$http,$ionicUser,$ionicLoading,$ionicXmpp){
                     var info = $ionicUser.info,islogin = $ionicUser.islogin;
                     
                     //未登录显示推广头像
-                    if(islogin){
-                        $http.get('/xmpp/get/allonline').success(function(data){
-                            if(/\s*null\s*/.test(data)) return;
-                            var arr = data.split(','),items = [];
-                            for(var i = 0; i < arr.length; i++){
-                                var jid = arr[i],username = jid.split('@')[0];
-                                items.push({jid:jid,username:username})
-                            }
-                            $scope.items = items;
-                        })
-                    }else{
+                    if(!islogin){
                         $scope.items = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
                     }
 
@@ -605,9 +616,44 @@ app.config(function($stateProvider,$urlRouterProvider){
         views:{
             'history':{
                 templateUrl:'template/history.html',
-                controller:function($scope,$http,$ionicUser){
-                    var info = $ionicUser.info;
-                    $http.get('/api/pay/getChatRecords/' + info.username + '/0/50').success(function(data){
+                controller:function($scope,$http,$ionicUser,$ionicTip){
+                    var info = $ionicUser.info,base = 0,offset = 10;
+                    $scope.hasMore = true;
+                    $scope.loadMore = function(){
+                        //alert(base)
+                        $http.get('/api/pay/getChatRecords/' + info.username + '/' + base + '/' + offset).success(function(data){
+                            var l = data.length
+                            if(l){
+                                for(var i = 0; i < l; i++){
+                                    var d = data[i],name = d.partnerUserName,type = d.callType,date = d.beginTime;
+                                    data[i]['img'] = '/avatar/' + name + '.40.png';
+                                    data[i]['type'] = type == 'called' ? '呼入':'呼出';
+                                    data[i]['date'] = date;
+                                }
+
+                                if(!$scope.items){
+                                    $scope.items = data;
+                                }else{
+                                    $scope.items = $scope.items.concat(data);
+                                }
+
+                                if(l == offset){
+                                    base += 10;
+                                    $scope.hasMore = true;
+                                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                                }else{
+                                    $ionicTip.show('暂无更多历史记录');
+                                    $scope.hasMore = false;
+                                }
+                                
+                            }else{
+                                $ionicTip.show('暂无更多历史记录');
+                                $scope.hasMore = false;
+                            }
+                        }).error(function(){
+                        })
+                    }
+                    /*$http.get('/api/pay/getChatRecords/' + info.username + '/0/10').success(function(data){
                         for(var i = 0; i < data.length; i++){
                             var d = data[i],name = d.partnerUserName,type = d.callType,date = d.beginTime;
                             data[i]['img'] = '/avatar/' + name + '.40.png';
@@ -616,7 +662,7 @@ app.config(function($stateProvider,$urlRouterProvider){
                         }
                         $scope.items = data;
                     }).error(function(){
-                    })
+                    })*/
                 }
             }
         }
@@ -779,7 +825,6 @@ app.config(function($stateProvider,$urlRouterProvider){
 
                         $ionicXmpp.connection.disconnect();
                         $ionicXmpp.connection = null;
-                        $ionicXmpp.connected = false;
                         $ionicXmpp.busy = false;
 
                         $ionicUser.info = null;
@@ -879,9 +924,9 @@ var facetalk = {
             emailRequired:'邮箱地址不能为空',
             email:'请输入正确的邮箱地址',
             pwdRequired:'请输入密码',
-            pwd:'格式错误:请输入6~16位字符,区分大小写',
+            pwd:'密码格式错误:6~16位字符,区分大小写',
             nameRequired:'用户名不能为空',
-            name:'格式错误:请输入2~18位汉字或英文字符'
+            name:'用户名格式错误:4~18位汉字或英文字符'
         },
         login:function(form,$ionicTip){
             var email = form.loginEmail,pwd = form.loginPassword,msgs = facetalk.valid.msgs,msg;
