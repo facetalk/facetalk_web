@@ -5,7 +5,7 @@
     <ion-content>
         <div ng-if="supportVideo && islogin">
             <div class="ion-flex">
-                <a ng-repeat="item in items" href="#/tab/detail/{{item.username}}" jid="{{item.jid}}" id="{{item.username}}"><img src="/avatar/{{item.username}}.png"/></a>
+                <a ng-repeat="item in online" href="#/tab/detail/{{item.username}}" jid="{{item.jid}}" id="{{item.username}}"><img src="/avatar/{{item.username}}.100.png"/></a>
                 <ion-infinite-scroll ng-if="moreDataCanBeLoaded()" on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
             </div>
         </div>
