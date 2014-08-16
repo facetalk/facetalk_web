@@ -14,7 +14,7 @@ local authsession = ngx.var["cookie_" .. authsessionCookieName]
 local username = ngx.var["cookie_" .. usernameCookieName]
 
 if username == nil or autho == nil or authsession == nil then
-    ngx.exit(ngx.HTTP_UNAUTHORIZED)
+    ngx.exit(ngx.HTTP_FORBIDDEN)
     return
 end
 
@@ -33,7 +33,7 @@ local res, typ = parser.parse_reply(redis_res.body)
 if res == autho .. "|" .. authsession then
     ngx.exit(ngx.HTTP_OK)
 else
-    ngx.exit(ngx.HTTP_UNAUTHORIZED)
+    ngx.exit(ngx.HTTP_FORBIDDEN)
 end
 
 
