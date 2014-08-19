@@ -1,18 +1,19 @@
-<ion-view title="脸呼">
-    <ion-nav-buttons side="right" ng-if="hasLogin()">
-        <a class="button button-clear font-small" href="{{loginUrl}}">登录</a>
+<ion-view title="脸呼 - 当前在线用户">
+    <ion-nav-buttons side="right" ng-if="!isLogin || !isComplete">
+        <a class="button button-clear font-small" href="{{redict}}">登录</a>
     </ion-nav-buttons>
     <ion-content>
-        <div ng-if="supportVideo && islogin">
-            <div class="ion-flex">
-                <a ng-repeat="item in online" href="#/tab/detail/{{item.username}}" jid="{{item.jid}}" id="{{item.username}}"><img src="/avatar/{{item.username}}.100.png"/></a>
-                <ion-infinite-scroll ng-if="moreDataCanBeLoaded()" on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
+        <div ng-if="supportVideo && isLogin">
+            <ion-refresher pulling-text="下拉刷新在线用户" on-refresh="doRefresh()"></ion-refresher>
+            <div class="ion-flex" ng-click="askNotice()">
+                <a ng-repeat="item in online" href="#/tab/detail/{{item.username}}" jid="{{item.jid}}" id="{{item.username}}"><img ng-src="/avatar/{{item.imgUrl}}"/></a>
             </div>
         </div>
-        <div ng-if="!supportVideo || !islogin">
-            <a href="#/tab/login" ng-if="supportVideo" class="home-tip">马上开启您的视频聊天之旅！</a>
-            <div class="ion-flex">
-                <a ng-repeat="item in items" href="#/tab/login"><img src="/images/avatar/{{item}}.jpg"/></a>
+        <div ng-if="!supportVideo || !isLogin || !isComplete">
+            <a href="#/tab/login" ng-if="supportVideo && !isLogin" class="home-tip">请先登录,以开启您的视频之旅！</a>
+            <a href="#/tab/chat" ng-if="supportVideo && isLogin && !isComplete" class="home-tip">请先设置头像,以开启您的视频之旅！</a>
+            <div class="unvalid-home">
+                <a href="{{redict}}"><img src="/images/avatar/multi.jpg"/></a>
             </div>
         </div>
     </ion-content>
