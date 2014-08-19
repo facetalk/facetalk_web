@@ -13,10 +13,15 @@
     <table border="0">
         <c:forEach var="user" items="${users}" varStatus="status">
             <tr>
+                <td>${status.index+1}</td>
                 <td>${user.username}</td>
                 <td>${user.name}</td>
                 <td>${user.creationTime}</td>
-                <td><img src="/avatar/${user.username}.100.png" alt=""></td>
+                <td>
+                    <c:if test="${user.infoCompleteness==1}">
+                        <img src="/avatar/${user.username}.100.png" alt="">
+                    </c:if>
+                </td>
             </tr>
         </c:forEach>
     </table>
