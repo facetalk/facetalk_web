@@ -10,7 +10,7 @@
 </head>
 <body>
 <div align="center">
-    <table border="0">
+    <table border="1">
         <c:forEach var="user" items="${users}" varStatus="status">
             <tr>
                 <td>${status.index+1}</td>
