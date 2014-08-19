@@ -30,7 +30,7 @@ public class UserDaoImpl implements UserDao {
     @Transactional
     public List<User> listUsers() {
         return sessionFactory.getCurrentSession()
-                .createQuery("from User").list();
+                .createQuery("from User u order by u.creationTime desc ").list();
     }
 
     @Override

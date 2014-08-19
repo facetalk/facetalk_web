@@ -6,20 +6,17 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Home</title>
+    <title>用户墙</title>
 </head>
 <body>
 <div align="center">
-    <h1>Contact List</h1>
-    <table border="1">
-        <th>No</th>
-        <th>Username</th>
-        <th>Email</th>
-
+    <table border="0">
         <c:forEach var="user" items="${users}" varStatus="status">
             <tr>
                 <td>${user.username}</td>
-                <td>${user.email}</td>
+                <td>${user.name}</td>
+                <td>${user.creationTime}</td>
+                <td><img src="/avatar/${user.username}.100.png" alt=""></td>
             </tr>
         </c:forEach>
     </table>
