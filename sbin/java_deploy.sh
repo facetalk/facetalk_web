@@ -29,3 +29,6 @@ sh /opt/server/tomcat/bin/startup.sh
 
 # 重启 nginx
 /usr/local/openresty/nginx/sbin/nginx -s reload
+
+#回到目录
+cd ../sbin
