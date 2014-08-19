@@ -14,19 +14,22 @@ img{vertical-align:middle}
 /*Home在线列表*/
 a.home-tip{display:block;font-size:16px;margin:10px auto;text-align:center;font-weight:bold;text-decoration:none;color:#999}
 .ion-flex{
-display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;
--webkit-box-lines:multiple;-moz-box-lines:multiple;ms-flex-wrap:wrap;-webkit-flex-wrap:wrap;flex-wrap:wrap;
-width:100%;
+display:-webkit-box;display:box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;
+-webkit-box-lines:multiple;box-lines:multiple;-moz-box-lines:multiple;ms-flex-wrap:wrap;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+width:100%;max-width:600px;margin:0 auto;
 }
 .ion-flex a{display:block;width:25%;border:solid 1px #fff;max-width:100px;height:130px;overflow:hidden;text-align:center;}
 .ion-flex img{width:100px;}
 .ion-circle{position:absolute;right:0;top:0;display:block;width:10px;height:10px;border-radius:5px;}
+.unvalid-home a{width:100%;display:block;text-align:center;font-size:12px;}
+.unvalid-home img{width:100%;max-width:400px;}
 
 /*History*/
 #history img{width:80px;height:auto;border-radius:0;max-height:130px;}
 
 /*登录页*/
 .login .row{width:80%;margin:0 auto;text-align:center;}
+.intro a,.intro a:link,.intro a:visited,.intro a:hover,.intro a:active{color:#3c579d;}
 
 /*拍照前提醒页*/
 .photos .step{width:90%;text-align:center;padding-top:20%;margin:0 auto;}
