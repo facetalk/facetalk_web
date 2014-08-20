@@ -41,7 +41,7 @@ public class AdminController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/loginLogByUser/{username}")
     public String loginLog(@PathVariable String username, ModelMap model) {
-        List<LoginLog> list = loginLogDao.listLoginLogByUserName(username, 1, 1000);
+        List<LoginLog> list = loginLogDao.listLoginLogByUserName(username,0, 1000);
         model.addAttribute("userlogs", list);
         return "userlogs";
     }
