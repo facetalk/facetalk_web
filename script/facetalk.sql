@@ -156,7 +156,6 @@ CREATE TABLE `fh_product` (
   DEFAULT CHARSET =utf8;
 
 
-
 -- 订单生成
 DROP TABLE IF EXISTS `fh_order`;
 CREATE TABLE `fh_order` (
@@ -303,6 +302,28 @@ CREATE TABLE `fh_chat_record` (
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8;
 
+--  用户登陆
+DROP TABLE IF EXISTS `fh_user_login_log`;
+CREATE TABLE `fh_user_login_log` (
+  `id`                BIGINT(11)  NOT NULL AUTO_INCREMENT,
+  `username`          VARCHAR(50) NOT NULL DEFAULT ''
+  COMMENT '用户名',
+  `name`              VARCHAR(100)
+                      CHARACTER SET utf8 DEFAULT NULL
+  COMMENT '用户昵称',
+
+  `info_completeness` TINYINT(4) DEFAULT '0'
+  COMMENT '信息完成度，0 基本信息 1 完成头像',
+
+  `ip`                CHAR(15)    NOT NULL
+  COMMENT '登陆ip',
+  `login_time`        TIMESTAMP   NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT '登陆时间',
+  PRIMARY KEY (`id`),
+  KEY `login_time` (`login_time`),
+  KEY `username` (`username`)
+)
+  ENGINE =MyISAM
+  DEFAULT CHARSET =utf8;
 
 
 

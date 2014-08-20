@@ -10,6 +10,7 @@
         <mapping class="com.facehu.web.model.Bill"/>
         <mapping class="com.facehu.web.model.Balance"/>
         <mapping class="com.facehu.web.model.ChatRecord"/>
+        <mapping class="com.facehu.web.model.LoginLog"/>
     </session-factory>
 
 </hibernate-configuration>

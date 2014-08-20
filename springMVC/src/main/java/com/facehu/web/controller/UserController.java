@@ -2,7 +2,9 @@ package com.facehu.web.controller;
 
 import ca.mgamble.xmpp.prebind.XMPPPrebind;
 import ca.mgamble.xmpp.prebind.classes.SessionInfo;
+import com.facehu.web.dao.LoginLogDao;
 import com.facehu.web.dao.UserDao;
+import com.facehu.web.model.LoginLog;
 import com.facehu.web.model.User;
 import com.facehu.web.util.CtlHelp;
 import com.facehu.web.util.CtlHelp.AjaxResult;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.Date;
 
@@ -25,6 +28,10 @@ import java.util.Date;
 public class UserController {
     @Autowired
     private UserDao userDao;
+
+
+    @Autowired
+    private LoginLogDao loginLogDao;
 
     @Value("${bosh.jabberHost}")
     private String jabberHost;
@@ -159,7 +166,7 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/loginForXmpp/{loginUserName}")
-    public RidSidResult loginForXmpp(@PathVariable String loginUserName) {
+    public RidSidResult loginForXmpp(@PathVariable String loginUserName, HttpServletRequest request) {
 
         String jid = null, sid = null, rid = null;
         User user = userDao.getUserByName(loginUserName);
@@ -182,6 +189,10 @@ public class UserController {
             jid = sessionInfo.getJid();
             sid = sessionInfo.getSid();
             rid = sessionInfo.getRid();
+
+
+            //存储登陆信息
+            loginLogDao.save(new LoginLog(loginUserName, request.getRemoteAddr(), new Date(), user.getInfoCompleteness(), user.getName()));
 
 
         } catch (Exception e) {

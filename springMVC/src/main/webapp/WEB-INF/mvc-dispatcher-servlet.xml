@@ -72,6 +72,12 @@
         </constructor-arg>
     </bean>
 
+    <bean id="loginLogDao" class="com.facehu.web.dao.impl.LoginLogDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory"/>
+        </constructor-arg>
+    </bean>
+
     <bean id="BillService" class="com.facehu.web.service.BillServiceImpl">
     </bean>
 
