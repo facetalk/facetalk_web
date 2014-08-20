@@ -192,7 +192,7 @@ public class UserController {
 
 
             //存储登陆信息
-            loginLogDao.save(new LoginLog(loginUserName, request.getRemoteAddr(), new Date(), user.getInfoCompleteness(), user.getName()));
+            loginLogDao.save(new LoginLog(loginUserName, CtlHelp.getIpAddr(request), new Date(), user.getInfoCompleteness(), user.getName()));
 
 
         } catch (Exception e) {
