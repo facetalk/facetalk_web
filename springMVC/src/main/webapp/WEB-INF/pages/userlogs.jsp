@@ -20,7 +20,7 @@
                 <td>${log.loginTime}</td>
                 <td>
                     <c:if test="${log.infoCompleteness==1}">
-                        <img src="/avatar/${user.username}.100.png" alt="">
+                        <img src="/avatar/${log.username}.100.png" alt="">
                     </c:if>
                 </td>
             </tr>
