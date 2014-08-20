@@ -2,6 +2,7 @@ package com.facehu.web.controller;
 
 import com.facehu.web.dao.LoginLogDao;
 import com.facehu.web.dao.UserDao;
+import com.facehu.web.model.LoginLog;
 import com.facehu.web.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,9 +34,16 @@ public class AdminController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/loginLog/{begin}/{maxNum}")
     public String loginLog(@PathVariable int begin, @PathVariable int maxNum, ModelMap model) {
-        List<User> listUsers = userDao.listUsers();
-        model.addAttribute("users", listUsers);
-        return "userList";
+        List<LoginLog> list = loginLogDao.listLoginLog(begin, maxNum);
+        model.addAttribute("logs", list);
+        return "loginlogs";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/loginLogByUser/{username}")
+    public String loginLog(@PathVariable String username, ModelMap model) {
+        List<LoginLog> list = loginLogDao.listLoginLogByUserName(username, 1, 1000);
+        model.addAttribute("userlogs", list);
+        return "userlogs";
     }
 
 
