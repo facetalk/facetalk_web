@@ -10,7 +10,7 @@
 </head>
 <body>
 <div align="center">
-    <a href="/api/admin/userWall">用户墙</a>
+    <a href="/api/admin/userWall">去往 》》》用户墙</a>
     <table border="1">
         <c:forEach var="log" items="${logs}" varStatus="status">
             <tr>

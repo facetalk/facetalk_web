@@ -11,7 +11,7 @@
 <body>
 <div align="center">
 
-    <a href="/api/admin/loginLog/0/1000"> 全部登陆日志 </a>
+    <a href="/api/admin/loginLog/0/1000"> 去往 》》》 全部登陆日志 </a>
     <table border="1">
         <c:forEach var="user" items="${users}" varStatus="status">
             <tr>
@@ -23,13 +23,13 @@
 
                 <td>
 
-                    <c:if test="${log.infoCompleteness==1}">
-                        <img src="/avatar/${log.username}.100.png" alt="">
+                    <c:if test="${user.infoCompleteness==1}">
+                        <img src="/avatar/${user.username}.100.png" alt="">
                     </c:if>
-                    <c:if test="${log.infoCompleteness==2}">
+                    <c:if test="${user.infoCompleteness==2}">
                         被删除
                     </c:if>
-                    <c:if test="${log.infoCompleteness==0}">
+                    <c:if test="${user.infoCompleteness==0}">
                         未上传
                     </c:if>
                 </td>
