@@ -21,7 +21,8 @@
                 <td>${log.loginTime}</td>
                 <td>
                     <c:if test="${log.infoCompleteness==1}">
-                        <img src="/avatar/${log.username}.100.png" alt="">
+                        <a target="_blank" href="http://www.facehu.com/#/tab/detail/${log.username}"><img
+                                src="/avatar/${log.username}.100.png" alt=""> </a>
                     </c:if>
                 </td>
             </tr>

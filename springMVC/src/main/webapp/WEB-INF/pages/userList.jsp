@@ -24,7 +24,8 @@
                 <td>
 
                     <c:if test="${user.infoCompleteness==1}">
-                        <img src="/avatar/${user.username}.100.png" alt="">
+                        <a target="_blank" href="http://www.facehu.com/#/tab/detail/${user.username}"> <img
+                                src="/avatar/${user.username}.100.png" alt=""> </a>
                     </c:if>
                     <c:if test="${user.infoCompleteness==2}">
                         被删除
