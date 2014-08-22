@@ -17,7 +17,7 @@
                 <td>${status.index+1}</td>
                 <td><a href="/api/admin/loginLogByUser/${log.username}"> ${log.username} </a></td>
                 <td>${log.name}</td>
-                <td><a href="http://www.baidu.com/s?wd=${log.ip}" target="_blank"> ${log.ip} </a></td>
+                <td><a href="http://www.ip138.com/ips138.asp?ip=${log.ip}" target="_blank"> ${log.ip} </a></td>
                 <td>${log.loginTime}</td>
                 <td>
                     <c:if test="${log.infoCompleteness==1}">

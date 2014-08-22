@@ -19,7 +19,7 @@
                 <td><a href="/api/admin/loginLogByUser/${user.username}"> ${user.username} </a></td>
                 <td>${user.name}</td>
                 <td>${user.creationTime}</td>
-                <td><a href="http://www.baidu.com/s?wd=${user.ip}" target="_blank"> ${user.ip} </a></td>
+                <td><a href="http://www.ip138.com/ips138.asp?ip=${user.ip}" target="_blank"> ${user.ip} </a></td>
 
                 <td>
 
