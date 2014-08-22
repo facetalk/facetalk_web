@@ -16,7 +16,7 @@
         <c:forEach var="user" items="${users}" varStatus="status">
             <tr>
                 <td>${status.index+1}</td>
-                <td>${user.username}</td>
+                <td><a href="/api/admin/loginLogByUser/${user.username}"> ${user.username} </a></td>
                 <td>${user.name}</td>
                 <td>${user.creationTime}</td>
                 <td><a href="http://www.baidu.com/s?wd=${user.ip}" target="_blank"> ${user.ip} </a></td>
