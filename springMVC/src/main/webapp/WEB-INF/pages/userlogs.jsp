@@ -11,6 +11,7 @@
 <body>
 <div align="center">
     <table border="1">
+        ${log.name}登陆日志
         <c:forEach var="log" items="${userlogs}" varStatus="status">
             <tr>
                 <td>${status.index+1}</td>
