@@ -10,6 +10,8 @@
 </head>
 <body>
 <div align="center">
+
+    <a href="/api/admin/loginLog/0/1000"> 全部登陆日志 </a>
     <table border="1">
         <c:forEach var="user" items="${users}" varStatus="status">
             <tr>
@@ -17,9 +19,18 @@
                 <td>${user.username}</td>
                 <td>${user.name}</td>
                 <td>${user.creationTime}</td>
+                <td><a href="http://www.baidu.com/s?wd=${user.ip}" target="_blank"> ${user.ip} </a></td>
+
                 <td>
-                    <c:if test="${user.infoCompleteness==1}">
-                        <img src="/avatar/${user.username}.100.png" alt="">
+
+                    <c:if test="${log.infoCompleteness==1}">
+                        <img src="/avatar/${log.username}.100.png" alt="">
+                    </c:if>
+                    <c:if test="${log.infoCompleteness==2}">
+                        被删除
+                    </c:if>
+                    <c:if test="${log.infoCompleteness==0}">
+                        未上传
                     </c:if>
                 </td>
             </tr>

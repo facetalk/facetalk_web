@@ -48,12 +48,29 @@ public class User {
     @Column(name = "modification_time")
     private Date modificationTime;
 
+    @Column(name = "ip")
+    private String ip;
+
     public User() {
 
 
     }
 
-    public User(String username, String password, String name, String email, int gender, int sexualOrientation, String introduction, String price, int infoCompleteness, Date creationTime, Date modificationTime) {
+    /**
+     * @param username
+     * @param password
+     * @param name
+     * @param email
+     * @param gender
+     * @param sexualOrientation
+     * @param introduction
+     * @param price
+     * @param infoCompleteness
+     * @param creationTime
+     * @param modificationTime
+     * @param ip
+     */
+    public User(String username, String password, String name, String email, int gender, int sexualOrientation, String introduction, String price, int infoCompleteness, Date creationTime, Date modificationTime, String ip) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -65,8 +82,8 @@ public class User {
         this.infoCompleteness = infoCompleteness;
         this.creationTime = creationTime;
         this.modificationTime = modificationTime;
+        this.ip = ip;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -78,6 +95,15 @@ public class User {
         if (username != null ? !username.equals(user.username) : user.username != null) return false;
 
         return true;
+    }
+
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     @Override

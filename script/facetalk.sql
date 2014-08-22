@@ -39,10 +39,13 @@ CREATE TABLE `fh_user` (
   COMMENT '更新时间',
   PRIMARY KEY (`username`)
 )
+
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8
   COLLATE =utf8_bin;
 
+ALTER TABLE fh_user ADD `ip` CHAR(15)
+COMMENT '注册时ip';
 
 DROP TABLE IF EXISTS `fh_groups`;
 CREATE TABLE `fh_groups` (
@@ -324,6 +327,8 @@ CREATE TABLE `fh_user_login_log` (
 )
   ENGINE =MyISAM
   DEFAULT CHARSET =utf8;
+
+
 
 
 

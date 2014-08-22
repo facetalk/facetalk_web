@@ -10,17 +10,21 @@
 </head>
 <body>
 <div align="center">
+    <a href="/api/admin/userWall">用户墙</a>
     <table border="1">
         <c:forEach var="log" items="${logs}" varStatus="status">
             <tr>
                 <td>${status.index+1}</td>
                 <td><a href="/api/admin/loginLogByUser/${log.username}"> ${log.username} </a></td>
                 <td>${log.name}</td>
-                <td>${log.ip}</td>
+                <td><a href="http://www.baidu.com/s?wd=${log.ip}" target="_blank"> ${log.ip} </a></td>
                 <td>${log.loginTime}</td>
                 <td>
                     <c:if test="${log.infoCompleteness==1}">
                         <img src="/avatar/${log.username}.100.png" alt="">
+                    </c:if>
+                    <c:if test="${log.infoCompleteness==2}">
+                        被删除
                     </c:if>
                 </td>
             </tr>

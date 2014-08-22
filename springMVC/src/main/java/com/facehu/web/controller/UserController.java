@@ -69,14 +69,14 @@ public class UserController {
         User user = userDao.getUserByName(userName);
 
         User returnUser = new User(user.getUsername(), "", user.getName(), user.getEmail(), user.getGender(),
-                user.getSexualOrientation(), user.getIntroduction(), user.getPrice(), user.getInfoCompleteness(), null, null);
+                user.getSexualOrientation(), user.getIntroduction(), user.getPrice(), user.getInfoCompleteness(), null, null, user.getIp());
         return returnUser;
     }
 
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.POST, value = "/register")
-    public CtlHelp.RegisterResult userRegister(User newUser) {
+    public CtlHelp.RegisterResult userRegister(User newUser, HttpServletRequest request) {
 
         //验证邮箱
         if (!CtlHelp.emailCheck(newUser.getEmail())) {
@@ -96,6 +96,7 @@ public class UserController {
         newUser.setUsername(username);
         newUser.setPassword(passwordMd5);
         newUser.setCreationTime(new Date());
+        newUser.setIp(CtlHelp.getIpAddr(request));
 
         Logger.debug(this, "User=" + newUser.toString());
 
