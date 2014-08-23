@@ -24,13 +24,13 @@ public class FaceSmsController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.POST, value = "/saveGif")
-    public CtlHelp.AjaxResult saveGif(@RequestParam("picData") String picData, @RequestParam("fileName") String fileName) {
+    public CtlHelp.AjaxResult saveGif(@RequestParam("picData") String picData, @RequestParam("gifId") String gifId) {
 
 
         String savefileName = new StringBuilder().append(faceSmsGifPath).append(File.separator)
-                .append(fileName.substring(0, 2)).append(File.separator)
-                .append(fileName.substring(2, 4)).append(File.separator)
-                .append(fileName).append(".gif").toString();
+                .append(gifId.substring(0, 2)).append(File.separator)
+                .append(gifId.substring(2, 4)).append(File.separator)
+                .append(gifId).append(".gif").toString();
         try {
 
             CtlHelp.writePicToFile(picData.substring(22), savefileName);
