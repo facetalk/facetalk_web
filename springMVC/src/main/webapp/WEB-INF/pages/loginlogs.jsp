@@ -11,45 +11,48 @@
 <body>
 
 
-<table border="0">
-    <tr>
-        <td>
-            <a href="/api/admin/userWall">用户墙</a> <br/>
-            <a href="/api/admin/chatRecords/0/1000">全部聊天记录</a>
+<div align="center">
+    <table border="0">
+        <tr valign="top">
+            <td valign="top">
+                <a href="/api/admin/userWall">用户墙 >>> </a> <br/>
+                <a href="/api/admin/chatRecords/0/1000">全部聊天记录 >>> </a>
 
 
-        </td>
-        <td>
-            <div align="center">
+            </td>
+            <td>
+                <div align="center">
 
-                全部登陆日志
+                    全部登陆日志
 
-                <table border="1">
-                    <c:forEach var="log" items="${logs}" varStatus="status">
-                        <tr>
-                            <td>${status.index+1}</td>
-                            <td><a href="/api/admin/loginLogByUser/${log.username}"> ${log.username} </a></td>
-                            <td>${log.name}</td>
-                            <td><a href="http://www.ip138.com/ips138.asp?ip=${log.ip}" target="_blank"> ${log.ip} </a>
-                            </td>
-                            <td>${log.loginTime}</td>
-                            <td>
-                                <c:if test="${log.infoCompleteness==1}">
-                                    <a target="_blank" href="http://www.facehu.com/#/tab/detail/${log.username}"> <img
-                                            src="/avatar/${log.username}.100.png" alt=""> </a>
-                                </c:if>
-                                <c:if test="${log.infoCompleteness==2}">
-                                    被删除
-                                </c:if>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </div>
-        </td>
-    </tr>
-</table>
+                    <table border="1">
+                        <c:forEach var="log" items="${logs}" varStatus="status">
+                            <tr>
+                                <td>${status.index+1}</td>
+                                <td><a href="/api/admin/loginLogByUser/${log.username}"> ${log.username} </a></td>
+                                <td>${log.name}</td>
+                                <td><a href="http://www.ip138.com/ips138.asp?ip=${log.ip}"
+                                       target="_blank"> ${log.ip} </a>
+                                </td>
+                                <td>${log.loginTime}</td>
+                                <td>
+                                    <c:if test="${log.infoCompleteness==1}">
+                                        <a target="_blank" href="http://www.facehu.com/#/tab/detail/${log.username}">
+                                            <img
+                                                    src="/avatar/${log.username}.100.png" alt=""> </a>
+                                    </c:if>
+                                    <c:if test="${log.infoCompleteness==2}">
+                                        被删除
+                                    </c:if>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-
+</div>
 </body>
 </html>

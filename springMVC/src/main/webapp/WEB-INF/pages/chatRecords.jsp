@@ -10,47 +10,45 @@
 </head>
 <body>
 
+<div align="center">
+    <table border="0">
+        <tr valign="top">
+            <td valign="top">
+                <a href="/api/admin/userWall">用户墙 >>> </a> <br/>
+                <a href="/api/admin/loginLog/0/1000">全部登陆日志 >>> </a><br/>
+            </td>
+            <td>
+                <div align="center">
 
-<table border="0">
-    <tr>
-        <td>
-            <a href="/api/admin/userWall">用户墙</a> <br/>
-            <a href="/api/admin/loginLog/0/1000">全部登陆日志 </a><br/>
+                    全部聊天记录
 
-
-        </td>
-        <td>
-            <div align="center">
-
-                全部聊天记录
-
-                <table border="1">
-                    <c:forEach var="chatRecord" items="${chatRecords}" varStatus="status">
-                        <tr>
-                            <td>${status.index+1}</td>
-                            <td>主叫
-                                <a href="/api/admin/loginLogByUser/${chatRecord.callingUserName}">
-                                    <img src="/avatar/${chatRecord.callingUserName}.100.png">
-                                </a>
-                            </td>
-                            <td>被叫
-                                <a href="/api/admin/loginLogByUser/${chatRecord.calledUserName}">
-                                    <img src="/avatar/${chatRecord.calledUserName}.100.png">
-                                </a>
-                            </td>
-                            <td>
-                                    ${chatRecord.beginTime}
-                            </td>
-                            <td>
-                                    ${chatRecord.finish_time}
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </div>
-        </td>
-    </tr>
-</table>
-
+                    <table border="1">
+                        <c:forEach var="chatRecord" items="${chatRecords}" varStatus="status">
+                            <tr>
+                                <td>${status.index+1}</td>
+                                <td>主叫
+                                    <a href="/api/admin/loginLogByUser/${chatRecord.callingUserName}">
+                                        <img src="/avatar/${chatRecord.callingUserName}.100.png">
+                                    </a>
+                                </td>
+                                <td>被叫
+                                    <a href="/api/admin/loginLogByUser/${chatRecord.calledUserName}">
+                                        <img src="/avatar/${chatRecord.calledUserName}.100.png">
+                                    </a>
+                                </td>
+                                <td>
+                                        ${chatRecord.beginTime}
+                                </td>
+                                <td>
+                                        ${chatRecord.finish_time}
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
 </body>
 </html>
