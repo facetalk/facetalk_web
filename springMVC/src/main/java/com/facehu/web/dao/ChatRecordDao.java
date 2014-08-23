@@ -17,4 +17,7 @@ public interface ChatRecordDao {
 
     @SuppressWarnings("unchecked")
     List<ChatRecord> listChatRecordByUser(String userName, int firstResult, int maxResult);
+
+
+    List<ChatRecord> listChatRecords(int firstResult, int maxResult);
 }

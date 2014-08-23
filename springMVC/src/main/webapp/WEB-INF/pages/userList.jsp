@@ -9,34 +9,51 @@
     <title>用户墙</title>
 </head>
 <body>
-<div align="center">
 
-    <a href="/api/admin/loginLog/0/1000"> 去往 》》》 全部登陆日志 </a>
-    <table border="1">
-        <c:forEach var="user" items="${users}" varStatus="status">
-            <tr>
-                <td>${status.index+1}</td>
-                <td><a href="/api/admin/loginLogByUser/${user.username}"> ${user.username} </a></td>
-                <td>${user.name}</td>
-                <td>${user.creationTime}</td>
-                <td><a href="http://www.ip138.com/ips138.asp?ip=${user.ip}" target="_blank"> ${user.ip} </a></td>
 
-                <td>
+<table border="0">
+    <tr>
+        <td>
+            <a href="/api/admin/loginLog/0/1000">全部登陆日志 </a><br/>
+            <a href="/api/admin/chatRecords/0/1000">全部聊天记录</a>
 
-                    <c:if test="${user.infoCompleteness==1}">
-                        <a target="_blank" href="http://www.facehu.com/#/tab/detail/${user.username}"> <img
-                                src="/avatar/${user.username}.100.png" alt=""> </a>
-                    </c:if>
-                    <c:if test="${user.infoCompleteness==2}">
-                        被删除
-                    </c:if>
-                    <c:if test="${user.infoCompleteness==0}">
-                        未上传
-                    </c:if>
-                </td>
-            </tr>
-        </c:forEach>
-    </table>
-</div>
+
+        </td>
+        <td>
+            <div align="center">
+
+                全部注册用户
+
+                <table border="1">
+                    <c:forEach var="user" items="${users}" varStatus="status">
+                        <tr>
+                            <td>${status.index+1}</td>
+                            <td><a href="/api/admin/loginLogByUser/${user.username}"> ${user.username} </a></td>
+                            <td>${user.name}</td>
+                            <td>${user.creationTime}</td>
+                            <td><a href="http://www.ip138.com/ips138.asp?ip=${user.ip}" target="_blank"> ${user.ip} </a>
+                            </td>
+
+                            <td>
+
+                                <c:if test="${user.infoCompleteness==1}">
+                                    <a target="_blank" href="http://www.facehu.com/#/tab/detail/${user.username}"> <img
+                                            src="/avatar/${user.username}.100.png" alt=""> </a>
+                                </c:if>
+                                <c:if test="${user.infoCompleteness==2}">
+                                    被删除
+                                </c:if>
+                                <c:if test="${user.infoCompleteness==0}">
+                                    未上传
+                                </c:if>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>

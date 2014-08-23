@@ -17,7 +17,8 @@
                 <td>${status.index+1}</td>
                 <td>${log.username}</td>
                 <td>${log.name}</td>
-                <td>${log.ip}</td>
+                <td><a href="http://www.ip138.com/ips138.asp?ip=${log.ip}" target="_blank"> ${log.ip} </a>
+                </td>
                 <td>${log.loginTime}</td>
                 <td>
                     <c:if test="${log.infoCompleteness==1}">

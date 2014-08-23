@@ -1,7 +1,9 @@
 package com.facehu.web.controller;
 
+import com.facehu.web.dao.ChatRecordDao;
 import com.facehu.web.dao.LoginLogDao;
 import com.facehu.web.dao.UserDao;
+import com.facehu.web.model.ChatRecord;
 import com.facehu.web.model.LoginLog;
 import com.facehu.web.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class AdminController {
     @Autowired
     private LoginLogDao loginLogDao;
 
+    @Autowired
+    private ChatRecordDao chatRecordDao;
+
     @Value("${avaterPath}")
     private String avaterPath;
 
@@ -51,8 +56,16 @@ public class AdminController {
         return "userlogs";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/chatRecords/{begin}/{maxNum}")
+    public String chatRecords(@PathVariable int begin, @PathVariable int maxNum, ModelMap model) {
+        List<ChatRecord> list = chatRecordDao.listChatRecords(begin, maxNum);
+        model.addAttribute("chatRecords", list);
+        return "chatRecords";
+    }
+
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/deletePic/{username}")
+
     public String deletePic(@PathVariable String username) {
         User user = userDao.getUserByName(username);
         user.setInfoCompleteness(2); // 1完成照片这一步 0完成基本信息

@@ -52,4 +52,16 @@ public class ChatRecordDaoImpl implements ChatRecordDao {
                 .list();
         return list;
     }
+
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<ChatRecord> listChatRecords(int firstResult, int maxResult) {
+        Session session = sessionFactory.getCurrentSession();
+        List<ChatRecord> list = session.createQuery("from ChatRecord c  order by c.beginTime   desc ")
+                .setFirstResult(firstResult)
+                .setMaxResults(maxResult)
+                .list();
+        return list;
+    }
 }
