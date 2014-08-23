@@ -1,6 +1,11 @@
 package com.facehu.web.util;
 
+import org.apache.commons.codec.binary.Base64;
+
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,6 +44,22 @@ public class CtlHelp {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+
+    public static void writePicToFile(String picDate, String fileName) throws IOException {
+        File file = new File(fileName);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        FileOutputStream fop = new FileOutputStream(file);
+
+
+        byte[] contentInBytes = Base64.decodeBase64(picDate);
+        fop.write(contentInBytes);
+        fop.flush();
+        fop.close();
+
     }
 
 

@@ -126,7 +126,7 @@ public class UserController {
             String saveOldCil = "mv " + fileName + " " + fileName + "." + System.currentTimeMillis();
             linuxCommand(saveOldCil);
 
-            writePicToFile(picData.substring(22), fileName);
+            CtlHelp.writePicToFile(picData.substring(22), fileName);
             //裁剪图片
             String fileName40 = avaterPath + File.separator + username + ".40.png";
             String fileName100 = avaterPath + File.separator + username + ".100.png";
@@ -144,6 +144,10 @@ public class UserController {
         }
 
     }
+
+
+
+
 
     private void linuxCommand(String convertCil) {
         try {
@@ -247,19 +251,5 @@ public class UserController {
     }
 
 
-    public void writePicToFile(String picDate, String fileName) throws IOException {
-        File file = new File(fileName);
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        FileOutputStream fop = new FileOutputStream(file);
-
-
-        byte[] contentInBytes = Base64.decodeBase64(picDate);
-        fop.write(contentInBytes);
-        fop.flush();
-        fop.close();
-
-    }
 
 }
