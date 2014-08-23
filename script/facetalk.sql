@@ -47,6 +47,8 @@ CREATE TABLE `fh_user` (
 ALTER TABLE fh_user ADD `ip` CHAR(15)
 COMMENT '注册时ip';
 
+ALTER TABLE fh_user MODIFY COLUMN ip VARCHAR(50);
+
 DROP TABLE IF EXISTS `fh_groups`;
 CREATE TABLE `fh_groups` (
   `group_name`  VARCHAR(255) NOT NULL
