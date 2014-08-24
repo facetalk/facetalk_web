@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <portable-config>
     <config-file path="WEB-INF/classes/facetalk.properties">
-        <replace key="bosh.jabberHost">www.facehu.com</replace>
+        <!--<replace key="bosh.jabberHost">www.facehu.com</replace>-->
         <replace key="avaterPath">/opt/facehu-web/avatar</replace>
         <replace key="faceSmsGifPath">/opt/facehu-web/faceSmsGif</replace>
 
