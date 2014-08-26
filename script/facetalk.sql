@@ -331,6 +331,8 @@ CREATE TABLE `fh_user_login_log` (
   DEFAULT CHARSET =utf8;
 
 
+ALTER TABLE fh_user_login_log MODIFY COLUMN ip VARCHAR(50);
+
 
 
 
