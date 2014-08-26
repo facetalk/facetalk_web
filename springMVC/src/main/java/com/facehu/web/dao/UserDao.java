@@ -15,6 +15,16 @@ public interface UserDao {
 
     public List<User> listUsers();
 
+
+    /**
+     * 根据用户的完成度排序
+     *
+     * @param isDesc
+     * @return
+     */
+    public List<String> listUserNamesByComplete(int infoCompleteness, boolean isDesc);
+
+
     public User getUserByName(String username);
 
 }

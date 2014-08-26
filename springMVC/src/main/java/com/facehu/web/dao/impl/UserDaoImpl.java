@@ -34,6 +34,24 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    @Transactional
+    public List<String> listUserNamesByComplete(int infoCompleteness, boolean isDesc) {
+        String sql = "select u.username from User u  where u.infoCompleteness = :infoCompleteness order by u.creationTime  ";
+
+
+        if (isDesc) {
+            sql = sql + "desc";
+        }
+
+
+        return sessionFactory.getCurrentSession()
+                .createQuery(sql).setParameter("infoCompleteness", infoCompleteness).list();
+
+    }
+
+
+    @Override
     @Transactional
     public void updateUser(User user) {
         sessionFactory.getCurrentSession().update(user);

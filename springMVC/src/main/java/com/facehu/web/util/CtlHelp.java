@@ -1,6 +1,12 @@
 package com.facehu.web.util;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -59,6 +65,18 @@ public class CtlHelp {
         fop.write(contentInBytes);
         fop.flush();
         fop.close();
+
+    }
+
+
+    public static String getPageHTML(String url, String encode) throws Exception {
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpGet httpget = new HttpGet(url);
+        HttpResponse response = httpclient.execute(httpget);
+        HttpEntity entity = response.getEntity();
+        String html = EntityUtils.toString(entity, encode);
+
+        return html;
 
     }
 
