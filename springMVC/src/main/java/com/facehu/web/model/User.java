@@ -27,7 +27,7 @@ public class User {
     private String email;
 
     @Column(name = "gender")
-    private int gender;
+    private int gender = 1;
 
     @Column(name = "sexual_orientation")
     private int sexualOrientation;
@@ -153,8 +153,6 @@ public class User {
     public void setPrice(String price) {
         this.price = price;
     }
-
-
 
 
     public int getStatus() {

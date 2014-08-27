@@ -50,6 +50,8 @@ COMMENT '注册时ip';
 ALTER TABLE fh_user ADD `status` TINYINT(4) DEFAULT '1'
 COMMENT '状态，0 被删除 1 正常';
 
+ALTER TABLE fh_user ALTER COLUMN cateId SET DEFAULT '2';
+
 ALTER TABLE fh_user MODIFY COLUMN ip VARCHAR(50);
 
 DROP TABLE IF EXISTS `fh_groups`;
