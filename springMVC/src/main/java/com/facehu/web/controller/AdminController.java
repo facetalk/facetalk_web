@@ -64,11 +64,38 @@ public class AdminController {
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, value = "/deletePic/{username}")
-
-    public String deletePic(@PathVariable String username) {
+    @RequestMapping(method = RequestMethod.GET, value = "/deletePic/{username}/{status}")
+    public String deletePic(@PathVariable String username, @PathVariable int status) {
         User user = userDao.getUserByName(username);
-        user.setInfoCompleteness(2); // 1完成照片这一步 0完成基本信息
+        user.setInfoCompleteness(status); // 1完成照片这一步 0完成基本信息
+        userDao.updateUser(user);
+        return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/deleteUser/{username}")
+    public String deleteUser(@PathVariable String username) {
+        User user = userDao.getUserByName(username);
+        user.setStatus(0); // 1正常 0删除
+        userDao.updateUser(user);
+        return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/recoverUser/{username}")
+    public String recoverUser(@PathVariable String username) {
+        User user = userDao.fetchUserByName(username);
+        user.setStatus(1); // 1正常 0删除
+        userDao.updateUser(user);
+        return "ok";
+    }
+
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/setGender/{username}/{gender}")
+    public String setGender(@PathVariable String username, @PathVariable int gender) {
+        User user = userDao.getUserByName(username);
+        user.setGender(gender); // 1正常 0删除
         userDao.updateUser(user);
         return "ok";
     }

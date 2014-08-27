@@ -10,7 +10,6 @@ import com.facehu.web.util.CtlHelp;
 import com.facehu.web.util.CtlHelp.AjaxResult;
 import com.facehu.web.util.Logger;
 import com.facehu.web.util.MD5;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -69,7 +68,7 @@ public class UserController {
         User user = userDao.getUserByName(userName);
 
         User returnUser = new User(user.getUsername(), "", user.getName(), user.getEmail(), user.getGender(),
-                user.getSexualOrientation(), user.getIntroduction(), user.getPrice(), user.getInfoCompleteness(), null, null, user.getIp());
+                user.getSexualOrientation(), user.getIntroduction(), user.getPrice(), user.getInfoCompleteness(), null, null, user.getIp(), 1);
         return returnUser;
     }
 
@@ -146,9 +145,6 @@ public class UserController {
     }
 
 
-
-
-
     private void linuxCommand(String convertCil) {
         try {
             Process p = Runtime.getRuntime().exec(convertCil);
@@ -175,6 +171,8 @@ public class UserController {
 
         String jid = null, sid = null, rid = null;
         User user = userDao.getUserByName(loginUserName);
+
+
         Logger.debug(this, "loginUserName=" + loginUserName + " loginUser = " + user);
 
 
@@ -249,7 +247,6 @@ public class UserController {
         }
 
     }
-
 
 
 }

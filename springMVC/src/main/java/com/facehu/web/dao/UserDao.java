@@ -27,4 +27,6 @@ public interface UserDao {
 
     public User getUserByName(String username);
 
+    public User fetchUserByName(String username);
+
 }

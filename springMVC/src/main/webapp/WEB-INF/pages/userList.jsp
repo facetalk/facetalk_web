@@ -37,19 +37,78 @@
                                 </td>
 
                                 <td>
-
                                     <c:if test="${user.infoCompleteness==1}">
                                         <a target="_blank" href="http://www.facehu.com/#/tab/detail/${user.username}">
                                             <img
                                                     src="/avatar/${user.username}.100.png" alt=""> </a>
+
+                                        <a href="/api/admin/deletePic/${user.username}/3" target="_blank">
+                                            【头像不清晰删除】
+                                        </a>
+                                        <a href="/api/admin/deletePic/${user.username}/4" target="_blank">
+                                            【头像不完整删除】
+                                        </a>
+                                        <a href="/api/admin/deletePic/${user.username}/5" target="_blank">
+                                            【非本人头像删除】
+                                        </a>
+                                        <a href="/api/admin/deletePic/${user.username}/6" target="_blank">
+                                            【头像不雅删除】
+                                        </a>
                                     </c:if>
+
+
                                     <c:if test="${user.infoCompleteness==2}">
                                         被删除
                                     </c:if>
+                                    <c:if test="${user.infoCompleteness==3}">
+                                        3头像不清晰删除
+                                    </c:if>
+                                    <c:if test="${user.infoCompleteness==4}">
+                                        4头像不完整删除
+                                    </c:if>
+                                    <c:if test="${user.infoCompleteness==5}">
+                                        5非本人头像删除
+                                    </c:if>
+                                    <c:if test="${user.infoCompleteness==6}">
+                                        6头像不雅删除
+                                    </c:if>
+
                                     <c:if test="${user.infoCompleteness==0}">
                                         未上传
                                     </c:if>
                                 </td>
+
+                                <td>
+
+                                    <c:if test="${user.gender==0}">
+                                        女性
+                                        <a href="/api/admin/setGender/${user.username}/1" target="_blank">
+                                            【设置成男性】 </a>
+                                    </c:if>
+                                    <c:if test="${user.gender==1}">
+                                        男性
+                                        <a href="/api/admin/setGender/${user.username}/0" target="_blank">
+                                            【设置成女性】 </a>
+                                    </c:if>
+
+
+                                </td>
+                                <td>
+
+                                    <c:if test="${user.status==0}">
+                                        用户被删除
+                                        <a href="/api/admin/recoverUser/${user.username}" target="_blank">
+                                            【恢复】 </a>
+                                    </c:if>
+                                    <c:if test="${user.status==1}">
+                                        正常
+                                        <a href="/api/admin/deleteUser/${user.username}" target="_blank">
+                                            【删除用户】 </a>
+                                    </c:if>
+
+
+                                </td>
+
                             </tr>
                         </c:forEach>
                     </table>

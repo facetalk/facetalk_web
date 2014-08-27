@@ -27,7 +27,7 @@ CREATE TABLE `fh_user` (
   COMMENT '自我介绍',
 
   `info_completeness`  TINYINT(4) DEFAULT '0'
-  COMMENT '信息完成度，0 基本信息 1 完成头像',
+  COMMENT '信息完成度，0基本信息，1完成头像，2头像已删除，3头像不清晰删除，4头像不完整删除、5非本人头像删除、6头像不雅删除',
 
   `price`              VARCHAR(100)
                        CHARACTER SET utf8 DEFAULT NULL
@@ -46,6 +46,9 @@ CREATE TABLE `fh_user` (
 
 ALTER TABLE fh_user ADD `ip` CHAR(15)
 COMMENT '注册时ip';
+
+ALTER TABLE fh_user ADD `status` TINYINT(4) DEFAULT '1'
+COMMENT '状态，0 被删除 1 正常';
 
 ALTER TABLE fh_user MODIFY COLUMN ip VARCHAR(50);
 

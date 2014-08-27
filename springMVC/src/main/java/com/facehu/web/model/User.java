@@ -51,6 +51,11 @@ public class User {
     @Column(name = "ip")
     private String ip;
 
+
+    @Column(name = "status")
+    private int status = 1;
+
+
     public User() {
 
 
@@ -69,8 +74,9 @@ public class User {
      * @param creationTime
      * @param modificationTime
      * @param ip
+     * @param status
      */
-    public User(String username, String password, String name, String email, int gender, int sexualOrientation, String introduction, String price, int infoCompleteness, Date creationTime, Date modificationTime, String ip) {
+    public User(String username, String password, String name, String email, int gender, int sexualOrientation, String introduction, String price, int infoCompleteness, Date creationTime, Date modificationTime, String ip, int status) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -83,6 +89,7 @@ public class User {
         this.creationTime = creationTime;
         this.modificationTime = modificationTime;
         this.ip = ip;
+        this.status = status;
     }
 
     @Override
@@ -97,6 +104,25 @@ public class User {
         return true;
     }
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("User{");
+        sb.append("username='").append(username).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", gender=").append(gender);
+        sb.append(", sexualOrientation=").append(sexualOrientation);
+        sb.append(", introduction='").append(introduction).append('\'');
+        sb.append(", price='").append(price).append('\'');
+        sb.append(", infoCompleteness=").append(infoCompleteness);
+        sb.append(", creationTime=").append(creationTime);
+        sb.append(", modificationTime=").append(modificationTime);
+        sb.append(", ip='").append(ip).append('\'');
+        sb.append(", status=").append(status);
+        sb.append('}');
+        return sb.toString();
+    }
 
     public String getIp() {
         return ip;
@@ -128,22 +154,15 @@ public class User {
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("User{");
-        sb.append("username='").append(username).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", gender=").append(gender);
-        sb.append(", sexualOrientation=").append(sexualOrientation);
-        sb.append(", introduction='").append(introduction).append('\'');
-        sb.append(", price='").append(price).append('\'');
-        sb.append(", infoCompleteness=").append(infoCompleteness);
-        sb.append(", creationTime=").append(creationTime);
-        sb.append(", modificationTime=").append(modificationTime);
-        sb.append('}');
-        return sb.toString();
+
+
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getUsername() {

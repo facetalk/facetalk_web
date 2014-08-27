@@ -37,7 +37,7 @@ public class UserDaoImpl implements UserDao {
     @SuppressWarnings("unchecked")
     @Transactional
     public List<String> listUserNamesByComplete(int infoCompleteness, boolean isDesc) {
-        String sql = "select u.username from User u  where u.infoCompleteness = :infoCompleteness order by u.creationTime  ";
+        String sql = "select u.username from User u where u.status=1 and u.infoCompleteness = :infoCompleteness order by u.creationTime  ";
 
 
         if (isDesc) {
@@ -61,6 +61,17 @@ public class UserDaoImpl implements UserDao {
     @Transactional
     @SuppressWarnings("unchecked")
     public User getUserByName(String username) {
+        Session session = sessionFactory.getCurrentSession();
+        List<User> list = session.createQuery("from User u where u.status=1 and u.username = :username")
+                .setParameter("username", username)
+                .list();
+        return list.size() > 0 ? list.get(0) : null;
+    }
+
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public User fetchUserByName(String username) {
         Session session = sessionFactory.getCurrentSession();
         List<User> list = session.createQuery("from User u where u.username = :username")
                 .setParameter("username", username)
