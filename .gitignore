@@ -19,3 +19,5 @@ Thumbs.db
 
 deploy
 deploy/facetalk_web.war
+
+facetalk_web.iml
