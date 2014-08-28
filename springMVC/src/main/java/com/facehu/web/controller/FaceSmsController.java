@@ -1,15 +1,13 @@
 package com.facehu.web.controller;
 
 import com.facehu.web.dao.UserDao;
+import com.facehu.web.model.User;
 import com.facehu.web.util.CtlHelp;
 import com.facehu.web.util.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +56,36 @@ public class FaceSmsController {
     public List<UserStatus> getUserList() {
         List<String> userlist = userDao.listUserNamesByComplete(1, true);
 
+        List<UserStatus> userStatusList = filterUserList(userlist);
+
+        return userStatusList;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/getUserListByPage/{userName}/{firstResult}/{maxResult}")
+    public List<UserStatus> getUserListByPage(@PathVariable String userName,
+                                              @PathVariable int firstResult,
+                                              @PathVariable int maxResult) {
+
+
+        User user = userDao.getUserByName(userName);
+
+        if (user == null) {
+            return null;
+        }
+
+
+        List<String> userlist = userDao.listUserNamesByCompleteAndGender(1, user.getGender() == 0 ? true : false);
+
+        List<UserStatus> userStatusList = filterUserList(userlist);
+
+
+        return userStatusList.subList(firstResult, (firstResult + maxResult));
+    }
+
+
+    private List<UserStatus> filterUserList(List<String> userlist) {
         List<UserStatus> userStatusList = new ArrayList<UserStatus>();
 
         try {
@@ -86,10 +114,8 @@ public class FaceSmsController {
         for (String userName : userlist) {
             userStatusList.add(new UserStatus(userName, false));
         }
-
         return userStatusList;
     }
-
 
     public static class UserStatus {
         String userName;

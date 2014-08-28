@@ -50,6 +50,23 @@ public class UserDaoImpl implements UserDao {
 
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    @Transactional
+    public List<String> listUserNamesByCompleteAndGender(int infoCompleteness, boolean isDesc) {
+        String sql = "select u.username from User u where u.status=1 and u.infoCompleteness = :infoCompleteness order by u.gender  ";
+
+
+        if (isDesc) {
+            sql = sql + "desc";
+        }
+
+
+        return sessionFactory.getCurrentSession()
+                .createQuery(sql).setParameter("infoCompleteness", infoCompleteness).list();
+
+    }
+
 
     @Override
     @Transactional

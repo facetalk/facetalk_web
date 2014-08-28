@@ -24,6 +24,8 @@ public interface UserDao {
      */
     public List<String> listUserNamesByComplete(int infoCompleteness, boolean isDesc);
 
+    public List<String> listUserNamesByCompleteAndGender(int infoCompleteness, boolean isDesc);
+
 
     public User getUserByName(String username);
 
