@@ -69,13 +69,14 @@ public class FaceSmsController {
                                               @PathVariable int firstResult,
                                               @PathVariable int maxResult) {
 
-
+        if (firstResult < 0 || maxResult < 0) {
+            return Collections.emptyList();
+        }
         User user = userDao.getUserByName(userName);
 
         if (user == null) {
             return null;
         }
-
 
         List<String> userlist = userDao.listUserNamesByCompleteAndGender(1, user.getGender() == 0 ? true : false);
 
