@@ -80,8 +80,11 @@ public class FaceSmsController {
 
         List<UserStatus> userStatusList = filterUserList(userlist);
 
-
-        return userStatusList.subList(firstResult, (firstResult + maxResult));
+        int size = firstResult + maxResult;
+        if (size > userStatusList.size()) {
+            size = userStatusList.size();
+        }
+        return userStatusList.subList(firstResult, size);
     }
 
 
