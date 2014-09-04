@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -83,6 +84,9 @@ public class FaceSmsController {
         int size = firstResult + maxResult;
         if (size > userStatusList.size()) {
             size = userStatusList.size();
+        }
+        if (firstResult > userStatusList.size()) {
+            return Collections.emptyList();
         }
         return userStatusList.subList(firstResult, size);
     }
