@@ -8,6 +8,7 @@
 
     <context:component-scan base-package="com.facehu.web.service"/>
     <context:component-scan base-package="com.facehu.web.controller"/>
+    <context:component-scan base-package="com.facehu.web.statistic.controller"/>
 
     <mvc:annotation-driven/>
 
@@ -78,13 +79,24 @@
         </constructor-arg>
     </bean>
 
+    <bean id="loginLogStatDao" class="com.facehu.web.statistic.dao.impl.LoginLogStatDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory"/>
+        </constructor-arg>
+    </bean>
+
     <bean id="BillService" class="com.facehu.web.service.BillServiceImpl">
     </bean>
 
 
     <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="fileEncoding" value="UTF-8"/>
-        <property name="location" value="classpath:facetalk.properties"/>
+        <property name="locations">
+            <list>
+                <value>classpath:facetalk.properties</value>
+                <value>classpath:deprecat.properties</value>
+            </list>
+        </property>
     </bean>
 
 </beans>

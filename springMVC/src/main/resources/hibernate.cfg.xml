@@ -11,6 +11,7 @@
         <mapping class="com.facehu.web.model.Balance"/>
         <mapping class="com.facehu.web.model.ChatRecord"/>
         <mapping class="com.facehu.web.model.LoginLog"/>
+        <mapping class="com.facehu.web.statistic.model.LoginLogStat"/>
     </session-factory>
 
 </hibernate-configuration>
