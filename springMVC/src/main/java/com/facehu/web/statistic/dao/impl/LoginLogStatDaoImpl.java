@@ -3,11 +3,13 @@ package com.facehu.web.statistic.dao.impl;
 import com.facehu.web.statistic.dao.LoginLogStatDao;
 import com.facehu.web.statistic.vo.LoginStat;
 import com.facehu.web.util.Util;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,6 +27,13 @@ public class LoginLogStatDaoImpl implements LoginLogStatDao {
     @Override
     @Transactional
     public List<LoginStat> list(int startDate, int endDate, int gender, List<String> deUns) {
+        if (StringUtils.length(startDate + "") != 8
+                || StringUtils.length(endDate + "") != 8
+                || gender < -1
+                || gender > 1
+                || startDate > endDate) {
+            return Collections.emptyList();
+        }
         StringBuilder ql = new StringBuilder();
         ql.append(" SELECT ");
         ql.append(" idate,count(distinct l.username) login_user_num,count(*) login_num");
@@ -64,5 +73,6 @@ public class LoginLogStatDaoImpl implements LoginLogStatDao {
         }
         return result;
     }
+
 
 }
