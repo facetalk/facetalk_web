@@ -46,7 +46,7 @@ public class LoginLogStatDaoImpl implements LoginLogStatDao {
             ql.append(" AND gender=:gender");
         }
         if (!deUns.isEmpty()) {
-            ql.append(" AND username not in (:usernames)");
+            ql.append(" AND l.username not in (:usernames)");
         }
         ql.append(" GROUP BY idate");
         ql.append(" ORDER by idate desc");
